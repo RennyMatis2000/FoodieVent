@@ -1,10 +1,11 @@
+from datetime import datetime, timedelta
 from flask_wtf import FlaskForm
 from wtforms.fields import (
     TextAreaField, SubmitField, StringField, TelField, IntegerField, SelectField,
-    BooleanField, PasswordField, DateTimeLocalField, DecimalField, HiddenField  # <-- HiddenField added
+    BooleanField, PasswordField, DateTimeLocalField, DecimalField, HiddenField  
 )
 from wtforms.validators import DataRequired, InputRequired, Length, Email, EqualTo, NumberRange
-from wtforms.validators import ValidationError  # <-- added
+from wtforms.validators import ValidationError  
 from . models import EventCategory, User, Event
 from . import db
 from flask_wtf.file import FileRequired, FileField, FileAllowed
@@ -12,8 +13,7 @@ from flask import flash
 from werkzeug.utils import secure_filename
 import os
 import re  # <-- added
-from datetime import timedelta  # <-- for duration check
-from sqlalchemy import func      # <-- for case-insensitive title check
+from sqlalchemy import func     
 
 ALLOWED_FILE = {'PNG', 'JPG', 'JPEG', 'png', 'jpg', 'jpeg'}
 
@@ -308,12 +308,23 @@ class EventForm(FlaskForm):
         existing = db.session.scalar(q)
         if existing:
             raise ValidationError("An event with this title already exists. Please choose a different title.")
+        
+    def validate_start_time(self, field):
+        """Start time cannot be in the past and must be in the future"""
+        start = field.data
+        now = datetime.now()
+        if start:
+            if start <= now:
+                raise ValidationError("Start time cannot be in the past.")
 
     def validate_end_time(self, field):
         """End after start and at least 1 hour duration."""
         start = self.start_time.data
         end = field.data
+        now = datetime.now()
         if start and end:
+            if end and end <= now:
+                raise ValidationError("End time cannot be in the past.")
             if end <= start:
                 raise ValidationError("End time must be after the start time.")
             if end - start < timedelta(hours=1):

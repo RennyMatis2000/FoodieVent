@@ -16,9 +16,10 @@ class EventStatus(enum.Enum):
     SOLDOUT = "Soldout"
     CANCELLED = "Cancelled"
 
-class TicketType(enum.Enum):
-    CHILD = "Child"
-    ADULT = "Adult"
+class TicketStatus(enum.Enum):
+    ACTIVE = "Active"
+    INACTIVE = "Inactive"
+    CANCELLED = "Cancelled"
 
 class User(db.Model, UserMixin):
     __tablename__ = "users"
@@ -78,6 +79,7 @@ class Order(db.Model):
     tickets_purchased = db.Column(db.Integer, nullable=False)
     booking_time = db.Column(db.DateTime, default=datetime.now, nullable=False)
     purchased_amount = db.Column(Numeric(10, 2), nullable=False)
+    ticket_status = db.Column(db.Enum(TicketStatus), default=TicketStatus.ACTIVE)
 
     # Foreign keys -> now point to users.id / events.id
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)

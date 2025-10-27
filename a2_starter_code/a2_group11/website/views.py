@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, redirect, url_for
+from flask import Blueprint, render_template, request, redirect, url_for, flash
 from . models import Event, EventCategory
 from . import db
 from . events import live_status
@@ -17,12 +17,17 @@ def search():
     if request.args['search'] and request.args['search'] != "":
         print(request.args['search'])
         query = "%" + request.args['search'] + "%"
-        events = db.session.scalars(db.select(Event).where(Event.description.like(query)).order_by(Event.start_time))
+        events = db.session.scalars(
+            db.select(Event).where(Event.description.like(query)).order_by(Event.start_time)).all()  
         live_status()
+        if not events:  
+            flash('No events were found with a description that involves the text searched.')
         return render_template('index.html', events=events)
     else:
         live_status()
+        flash('No events were found with a description that involves the text searched.')
         return redirect(url_for('main.index'))
+
 
 @main_bp.route('/food')
 def food():

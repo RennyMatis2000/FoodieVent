@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash, abort
 from datetime import datetime
-from . models import Event, Order, EventStatus, Comment
+from . models import Event, Order, EventStatus, Comment, TicketStatus
 from . forms import EventForm, CommentForm, PurchaseTicketForm, check_upload_file
 from . import db
 from flask_login import login_required, current_user
@@ -12,8 +12,10 @@ def show(event_id):
     event = db.session.scalar(db.select(Event).where(Event.id==event_id))
     # Generate comment form
     form = CommentForm()
+    # Generate purchase form
+    purchase_form = PurchaseTicketForm()
     live_status()
-    return render_template('events/show.html', event=event, form=form)
+    return render_template('events/show.html', event=event, form=form, purchase_form=purchase_form)
 
 # Create event method
 @event_bp.route('/create', methods = ['GET', 'POST'])
@@ -46,7 +48,7 @@ def create():
         db.session.add(event)
         db.session.commit()
         flash('Successfully created new Food and Drink Festival event', 'success')
-        return redirect(url_for('events.create'))
+        return redirect(url_for('main.index'))
     # Always end with redirect when form is valid
     live_status()
     return render_template('events/create.html', form=form)
@@ -85,7 +87,7 @@ def update(event_id):
         db.session.commit()
         flash('Successfully updated Food and Drink Festival event', 'success')
         live_status()
-        return redirect(url_for('events.update', event_id=event.id))
+        return redirect(url_for('events.show', event_id=event.id))
         # Always end with redirect when form is valid
     live_status()
     return render_template('events/update.html',  form=form, event=event)
@@ -98,16 +100,39 @@ def cancel(event_id):
     event = db.session.get(Event, event_id)
     if event.creator_id != current_user.id:
         flash(f'The event: {event.title} was not created by the currently logged in user.')
-        return redirect(url_for('events.show', event_id=event.id))
+        return redirect(url_for('events.update', event_id=event.id))
 
     if event.status != EventStatus.CANCELLED:
         event.status = EventStatus.CANCELLED
         db.session.commit()
         flash(f'The event: {event.title} has been cancelled.')
+    elif event.status == EventStatus.CANCELLED:
+        event.status = EventStatus.OPEN
+        db.session.commit()
+        flash(f'The event: {event.title} has been re-opened. If this is an outdated event, the status will be inactive. If this event has 0 tickets, the status will be soldout.')
     else:
         flash(f'The event: {event.title} cannot be cancelled, as it is already cancelled.')
 
-    return redirect(url_for('events.show', event_id=event.id))
+    return redirect(url_for('events.update', event_id=event.id))
+
+# Cancel order
+@event_bp.route('/<int:order_id>/cancel_order', methods=['GET', 'POST'])
+@login_required
+def cancel_order(order_id):
+    # Fetch the order by ID
+    order = db.session.get(Order, order_id)
+    if order.ticket_status != TicketStatus.CANCELLED:
+        order.ticket_status = TicketStatus.CANCELLED
+        db.session.commit()
+        flash(f'The order #{order.id} has been cancelled.', 'success')
+    elif order.ticket_status == TicketStatus.CANCELLED:
+        order.ticket_status = TicketStatus.ACTIVE
+        db.session.commit()
+        flash(f'The order #{order.id} has been re-activated. If this event has already occured the ticket status will be inactive.', 'success')
+    else:
+        flash(f'The order: #{order_id} cannot be cancelled, as it is already cancelled.')
+
+    return redirect(url_for('users.display_booking_history'))
 
 # Purchase tickets to generate an order, and redirect to booking history page
 @event_bp.route('/<int:event_id>/purchase', methods = ['GET', 'POST'])
@@ -126,6 +151,7 @@ def purchase_tickets(event_id):
                 user_id=current_user.id,
                 tickets_purchased=form.tickets_purchased.data,
                 purchased_amount=event.ticket_price * form.tickets_purchased.data,
+                ticket_status = TicketStatus.ACTIVE,
                 booking_time= datetime.now()
             )
             event.total_tickets -= tickets
@@ -163,10 +189,15 @@ def comment(event_id):
 def live_status():
     now = datetime.now()
     events = db.session.scalars(db.select(Event)).all()
+    orders = db.session.scalars(db.select(Order)).all()
 
     for event in events:
         if event.status == EventStatus.CANCELLED:
-            new_status = EventStatus.CANCELLED
+            # Event stays cancelled until end time is in the past, then turns to inactive
+            if event.end_time and now > event.end_time:
+                new_status = EventStatus.INACTIVE  
+            else:
+                new_status = EventStatus.CANCELLED
         elif (event.total_tickets or 0) <= 0:
             new_status = EventStatus.SOLDOUT
         elif event.end_time and now <= event.end_time:
@@ -178,6 +209,21 @@ def live_status():
             event.status = new_status
             event.status_date = now
 
+    for order in orders:
+        event_order = order.event 
+        if order.ticket_status == TicketStatus.CANCELLED:
+            if event_order.end_time and now > event_order.end_time:
+                new_ticketstatus = TicketStatus.INACTIVE
+            else:
+                new_ticketstatus = TicketStatus.CANCELLED
+        elif event_order.end_time and now <= event_order.end_time:
+            new_ticketstatus = TicketStatus.ACTIVE
+        else:
+            new_ticketstatus = TicketStatus.INACTIVE
+
+        if order.ticket_status != new_ticketstatus:
+            order.ticket_status = new_ticketstatus
+
     db.session.commit()
 
-    #test123
+

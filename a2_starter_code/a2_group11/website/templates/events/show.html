@@ -34,21 +34,18 @@
           <span class="badge bg-success">Tickets Remaining: {{event.total_tickets}}</span>
           <!-- Description of the event-->
           <p>{{event.description}}</p>
-          <!-- Book now button-->
+          {% if event.status.name != 'SOLDOUT' %}
+          <!-- Book now button only displays if the event status is not sold out-->
           <a href="{{ url_for('events.purchase_tickets', event_id=event.id) }}" class="btn btn-success">
             Book Now
           </a>
+          {% endif %}
           <!--If the signed in user is the creator of the event, display update and cancel buttons-->
           {% if current_user.id == event.creator_id %}
           <a href="{{ url_for('events.update', event_id=event.id) }}" class="btn btn-primary">
             Update Event
           </a>
-          <a href="{{ url_for('events.cancel', event_id=event.id) }}" class="btn btn-danger"
-            onclick="return confirm('Are you sure you want to cancel this event?');">
-            Cancel Event
-          </a>
           {% endif %}
-
         </div>
       </div>
     </div>

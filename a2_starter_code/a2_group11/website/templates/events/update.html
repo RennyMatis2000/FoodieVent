@@ -7,24 +7,86 @@
 
 <!-- Event update page container -->
 <div class="container-create">
-<!-- Jumbotron banner(large banner ) for update event page-->
-<div class="p-5 creationjumbotronimage rounded-3">
+  <!-- Jumbotron banner(large banner ) for update event page-->
+  <div class="p-5 creationjumbotronimage rounded-3">
     <div class="jumbotronback container-fluid py-5 ">
       <!-- Page title-->
-        <h1 class="display-5 fw-bold">Update an Event</h1>
-        <!-- Description-->
-        <p class="col-md-8 fs-4">At FoodieVent, it's not just an event. Share memories, bring people
-            together. Enjoy food, drinks, and company. Update your pre-existing event here.</p>
+      <h1 class="display-5 fw-bold">Update an Event</h1>
+      <!-- Description-->
+      <p class="col-md-8 fs-4">At FoodieVent, it's not just an event. Share memories, bring people
+        together. Enjoy food, drinks, and company. Update your pre-existing event here.</p>
     </div>
-</div>
+  </div>
 
-<!-- Form section -->
-    <div class="row mt-5">
-      <!-- Renders the event update form-->
-      <div class="col-12 col-md-10 col-lg-8 offset-md-2">
-        {{ render_form(form, button_map={'submit': 'success'}) }}
+  <!-- Form section -->
+  <div class="row mt-5">
+    <!-- Renders the event update form -->
+    <div class="col-12 col-md-10 col-lg-8 offset-md-2">
+      {{ render_form(form, button_map={'submit': 'success'}) }}
+
+      <div class="d-flex flex-wrap gap-2">
+        {% if event.status.name == 'CANCELLED' %}
+        <!-- Re-open Event button -->
+        <button type="button" class="btn btn-warning" data-bs-toggle="modal"
+          data-bs-target="#reopenEventModal{{ event.id }}">
+          Re-open Event
+        </button>
+
+        <!-- Re-open Event Modal -->
+        <div class="modal fade" id="reopenEventModal{{ event.id }}" tabindex="-1" aria-labelledby="reopenEventLabel"
+          aria-hidden="true">
+          <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+              <div class="modal-header bg-warning">
+                <h1 class="modal-title fs-5" id="reopenEventLabel">Confirm Event Re-opening</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+                <p>Are you sure you want to re-open this event?<br>
+                  <small>(Outdated events will be set to inactive, events with 0 tickets will be set to sold
+                    out.)</small>
+                </p>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No, keep cancelled</button>
+                <a href="{{ url_for('events.cancel', event_id=event.id) }}" class="btn btn-warning">Yes, re-open
+                  event</a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {% else %}
+        <!-- Cancel Event button -->
+        <button type="button" class="btn btn-danger" data-bs-toggle="modal"
+          data-bs-target="#cancelEventModal{{ event.id }}">
+          Cancel Event
+        </button>
+
+        <!-- Cancel Event Modal -->
+        <div class="modal fade" id="cancelEventModal{{ event.id }}" tabindex="-1" aria-labelledby="cancelEventLabel"
+          aria-hidden="true">
+          <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+              <div class="modal-header bg-danger text-white">
+                <h1 class="modal-title fs-5" id="cancelEventLabel">Confirm Event Cancellation</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+                <p>Are you sure you want to cancel this event?<br>
+                  This action is final and cannot be undone.
+                </p>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No, keep event</button>
+                <a href="{{ url_for('events.cancel', event_id=event.id) }}" class="btn btn-danger">Yes, cancel event</a>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
-<!-- end of the main container. -->
-{% endblock %}
+
+  {% endif %}
+  {% endblock %}
