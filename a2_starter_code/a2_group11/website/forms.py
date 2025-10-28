@@ -408,8 +408,6 @@ class RegisterForm(FlaskForm):
 
 # Create a user comment
 class CommentForm(FlaskForm):
-    contents = TextAreaField('Comment', validators=[InputRequired('Want to share your thoughts? Post a comment here')])
-    submit = SubmitField('Create')
+    contents = TextAreaField("Want to share your thoughts? Post a comment below.", validators=[InputRequired()])
+    submit = SubmitField('Post Comment')
 
-# Create an order form
-# class OrderForm(FlaskForm):

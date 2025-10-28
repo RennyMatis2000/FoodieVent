@@ -13,7 +13,8 @@
     {% if current_user.is_authenticated %}
     <p class="col-md-8 fs-4">
       Welcome back, {{ current_user.first_name }} {{ current_user.surname }}.
-      Browse your booking history for upcoming Food and Drink events, or spread the fun by hosting a Food and Drink event.
+      Browse your booking history for upcoming Food and Drink events, or spread the fun by hosting a Food and Drink
+      event.
     </p>
     <a href="{{ url_for('users.display_booking_history') }}" class="btn btn-success btn-lg">Booking History</a>
     <a href="{{ url_for('events.create') }}" class="btn btn-success btn-lg">Create Event</a>
@@ -61,96 +62,100 @@
     </div>
   </div>
   <!-- Flex container ends -->
-</div>
 
-<!-- Search Jumbotron -->
-<div id="container-search" class="container">
-  <div class="row justify-content-center mt-5 pb-4">
-    <div class="col-md-12">
-      <div class="card-search shadow p-5 mb-5">
-        <h1 class="text-center mb-3">Find the event that is just right for you.</h1>
-        <form action="{{ url_for('main.search') }}#container-search" method="get" role="search">
-          <h2 class="text-center mb-3">Don't skip an opportunity! Search FoodieVent.</h2>
-          <div class="input-group input-group-lg">
-            <input type="search" name="search" id="SearchForm" class="form-control" placeholder="Search FoodieVent"
-              aria-label="Search FoodieVent">
-            <button type="submit" class="btn btn-success">Search</button>
+  <!-- Search Jumbotron -->
+  <div id="container-search" class="container">
+    <div class="row justify-content-center mt-5 pb-4">
+      <div class="col-md-12">
+        <div class="card-search shadow p-5 mb-3">
+          <h1 class="text-center mb-3">Find the event that is just right for you.</h1>
+          <form action="{{ url_for('main.search') }}#container-search" method="get" role="search">
+            <h2 class="text-center mb-3">Don't skip an opportunity! Search FoodieVent.</h2>
+            <div class="input-group input-group-lg">
+              <input type="search" name="search" id="SearchForm" class="form-control" placeholder="Search FoodieVent"
+                aria-label="Search FoodieVent">
+              <button type="submit" class="btn btn-success">Search</button>
+            </div>
+          </form>
+          <hr>
+          <div class="row justify-content-center">
+            <div class="col-md-12">
+              <h1 class="text-center mb-3">Did you want a specific type of event?</h1>
+              <h2 class="text-center mb-3">Browse all upcoming food and drink events by filtering their category.</h2>
+              <div class="d-flex flex-column align-items-center gap-3">
+                <!-- Dropdown -->
+                <div class="dropdown">
+                  <button class="btn btn-success dropdown-toggle" type="button" id="categoryDropdown"
+                    data-bs-toggle="dropdown" aria-expanded="false">
+                    Browse by Category
+                  </button>
+                  <ul class="dropdown-menu" aria-labelledby="categoryDropdown">
+                    <li><a class="dropdown-item" href="{{ url_for('main.index') }}#page-header-event">All</a></li>
+                    <li><a class="dropdown-item" href="{{ url_for('main.food') }}#page-header-event">Food</a></li>
+                    <li><a class="dropdown-item" href="{{ url_for('main.drink') }}#page-header-event">Drink</a></li>
+                    <li><a class="dropdown-item" href="{{ url_for('main.cultural') }}#page-header-event">Cultural</a>
+                    </li>
+                    <li><a class="dropdown-item" href="{{ url_for('main.dietary') }}#page-header-event">Dietary</a></li>
+                  </ul>
+                </div>
+              </div>
+            </div>
           </div>
-        </form>
+        </div>
       </div>
     </div>
   </div>
-</div>
 
-<!-- Flex container begins -->
-<div class="container-flex">
-  <!-- Second row -->
+  <!-- Title of events -->
+  <h1 id="page-header-event" class="page-header">All recent upcoming {{ category }} events</h1>
+
+
+  {% with messages = get_flashed_messages(with_categories=true, category_filter=['inline']) %}
+  {% if messages %}
+  {% for _, message in messages %}
+  <div class="alert alert-info alert-dismissible fade show" role="alert">
+    {{ message }}
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+  </div>
+  {% endfor %}
+  {% endif %}
+  {% endwith %}
+
+
   <div class="row">
-    <!-- Title of events -->
-    <h1 id="page-header" class="page-header">All recent upcoming Food and Drink events</h1>
-
-    <!-- Category filter dropdown, featuring specific event types that jump the screen to the category sections -->
-    <div class="dropdown mb-4 text-center">
-      <button class="btn btn-success dropdown-toggle" type="button" id="categoryDropdown" data-bs-toggle="dropdown"
-        aria-expanded="false">
-        Browse by Category
-      </button>
-      <ul class="dropdown-menu" aria-labelledby="categoryDropdown">
-        <li><a class="dropdown-item" href="{{ url_for ('main.index') }}#upcoming-event">All</a></li>
-        <li><a class="dropdown-item" href="{{ url_for('main.food') }}#upcoming-event">Food</a></li>
-        <li><a class="dropdown-item" href="{{ url_for('main.drink') }}#upcoming-event">Drink</a></li>
-        <li><a class="dropdown-item" href="{{ url_for('main.cultural') }}#upcoming-event">Cultural</a></li>
-        <li><a class="dropdown-item" href="{{ url_for('main.dietary') }}#upcoming-event">Dietary</a></li>
-      </ul>
-    </div>
-
-    <!-- Food event section row -->
-    <div class="row">
-      <h2 id="upcoming-event" class="category-header">All Upcoming {{ category }} Events </h2>
-      {% with messages = get_flashed_messages(with_categories=true, category_filter=['inline']) %}
-      {% if messages %}
-      <div class="row">
-        <div class="col-12">
-          {% for _, message in messages %}
-          <div class="alert alert-info alert-dismissible fade show" role="alert">
-            {{ message }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    {% for event in events %}
+    <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-2">
+      <div class="card w-100 h-300">
+        <img class="card-img-top" src="{{ event.image }}" alt="event picture">
+        <div class="card-body">
+          <h5 class="card-title">{{ event.title }}</h5>
+          <div class="d-flex align-items-center gap-2 flex-wrap mb-2">
+            {% set category_badge = {
+            'FOOD': 'bg-success',
+            'DRINK': 'bg-primary',
+            'CULTURAL': 'bg-warning',
+            'DIETARY': 'bg-danger'
+            }[event.category_type.name] %}
+            <span class="badge {{ category_badge }}">Event Category: {{ event.category_type.name }}</span>
+            {% set status_badge = {
+            'OPEN': 'bg-success',
+            'INACTIVE': 'bg-secondary',
+            'SOLDOUT': 'bg-warning',
+            'CANCELLED': 'bg-danger'
+            }[event.status.name] %}
+            <span class="badge {{ status_badge }}">Event Status: {{ event.status.name }}</span>
+            <span class="badge bg-info">Tickets Remaining: {{ event.total_tickets }}</span>
           </div>
-          {% endfor %}
+          <p class="card-text">Start Time: {{ event.start_time }}</p>
+          <p class="card-text">End Time: {{ event.end_time }}</p>
+          <p class="card-text clamp-5">{{ event.description }}</p>
         </div>
+        <div class="card-footer"><a href="{{ url_for('events.show', event_id=event.id) }}" class="btn btn-success">
+            View
+            Details </a></div>
       </div>
-      {% endif %}
-      {% endwith %}
     </div>
-
-    <div class="row">
-      {% for event in events %}
-      <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-2">
-        <div class="card w-100 h-300">
-          <img class="card-img-top" src="{{ event.image }}" alt="event picture">
-          <div class="card-body">
-            <h5 class="card-title">{{ event.title }}</h5>
-            <div class="d-flex align-items-center gap-2 flex-wrap mb-2">
-              {% set status_badge = {
-              'OPEN': 'bg-success',
-              'INACTIVE': 'bg-secondary',
-              'SOLDOUT': 'bg-warning text-dark',
-              'CANCELLED': 'bg-danger'
-              }[event.status.name] %}
-              <span class="badge {{ status_badge }}">Event Status: {{ event.status.name }}</span>
-              <span class="badge bg-success">Tickets Remaining: {{ event.total_tickets }}</span>
-            </div>
-            <p class="card-text">Start Time: {{ event.start_time }}</p>
-            <p class="card-text">End Time: {{ event.end_time }}</p>
-            <p class="card-text clamp-5">{{ event.description }}</p>
-          </div>
-          <div class="card-footer"><a href="{{ url_for('events.show', event_id=event.id) }}" class="btn btn-success">
-              View
-              Details </a></div>
-        </div>
-      </div>
-      {% endfor %}
-    </div>
+    {% endfor %}
   </div>
 </div>
 {% endblock %}

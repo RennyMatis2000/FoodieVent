@@ -3,76 +3,98 @@ body {
   background-color: #f5f2ec;
 }
 
+.event-card {
+  background-color: rgb(233, 245, 227);
+}
+
+.comment-border {
+  background-color: #ffffff;
+  box-shadow: 0 0 0 2px #198754;
+  border-radius: .5rem;
+}
+
 /* home page jumbotron css */
 .homejumbotronimage {
-    background: url("../img/HomePageJumbo.jpg") center center;
-    background-size: cover;
-    color: #ffffff;
-    font-family: 'Merriweather';
-    /* black outline on white font for maximum readability over multiple colours */
-    text-shadow: 
-    -1px -1px 0 #000,  
-     1px -1px 0 #000,
-    -1px  1px 0 #000,
-     1px  1px 0 #000;
+  background: url("../img/HomePageJumbo.jpg") center center;
+  background-size: cover;
+  color: #ffffff;
+  font-family: 'Merriweather';
+  /* black outline on white font for maximum readability over multiple colours */
+  text-shadow:
+    -1px -1px 0 #000,
+    1px -1px 0 #000,
+    -1px 1px 0 #000,
+    1px 1px 0 #000;
+}
+
+#event-detail-card .card-img-top {
+  width: 100%;
+  aspect-ratio: 16 / 9;   
+  height: auto;           
+  object-fit: cover;      
+  display: block;
+  background-color: transparent; 
 }
 
 /* event creation and update page jumbotron css */
 .creationjumbotronimage {
-    background: url("/static/img/EventCreationJumbo.jpg") center center no-repeat;
-    background-size: cover;
-    color: white;
-    font-family: 'Merriweather';
-    /* black outline on white font for maximum readability over multiple colours */
-    text-shadow: 
-    -1px -1px 0 #000,  
-     1px -1px 0 #000,
-    -1px  1px 0 #000,
-     1px  1px 0 #000;
+  background: url("/static/img/EventCreationJumbo.jpg") center center no-repeat;
+  background-size: cover;
+  color: white;
+  font-family: 'Merriweather';
+  /* black outline on white font for maximum readability over multiple colours */
+  text-shadow:
+    -1px -1px 0 #000,
+    1px -1px 0 #000,
+    -1px 1px 0 #000,
+    1px 1px 0 #000;
+}
+
+#event-detail-card .card-footer {
+  background-color: rgb(233, 245, 227);
 }
 
 /* event details page jumbotron css */
 .detailjumbotronimage {
-    background: url("../img/DetailJumbotronImage.jpg") center center;
-    background-size: cover;
-    color: white;
-    font-family: 'Merriweather';
-    /* black outline on white font for maximum readability over multiple colours */
-    text-shadow: 
-    -1px -1px 0 #000,  
-     1px -1px 0 #000,
-    -1px  1px 0 #000,
-     1px  1px 0 #000;
+  background-size: cover;
+  color: white;
+  font-family: 'Merriweather';
+  /* black outline on white font for maximum readability over multiple colours */
+  text-shadow:
+    -1px -1px 0 #000,
+    1px -1px 0 #000,
+    -1px 1px 0 #000,
+    1px 1px 0 #000;
 }
 
 /* booking page jumbotron css */
 .bookingjumbotronimage {
-    background: url("../img/BookingJumbotronImage.jpg") center center;
-    background-size: cover;
-    color: white;
-    font-family: 'Merriweather';
-    /* black outline on white font for maximum readability over multiple colours */
-    text-shadow: 
-    -1px -1px 0 #000,  
-     1px -1px 0 #000,
-    -1px  1px 0 #000,
-     1px  1px 0 #000;
+  background: url("../img/BookingJumbotronImage.jpg") center center;
+  background-size: cover;
+  color: white;
+  font-family: 'Merriweather';
+  /* black outline on white font for maximum readability over multiple colours */
+  text-shadow:
+    -1px -1px 0 #000,
+    1px -1px 0 #000,
+    -1px 1px 0 #000,
+    1px 1px 0 #000;
 }
 
 /* carousel image css */
 .carousel-inner img {
-  height: 300px;    
-  object-fit: cover;   
-  width: 100%;         
+  height: 300px;
+  object-fit: cover;
+  width: 100%;
 }
 
 /* event image css */
 .event-image-cap {
   /* event image in event details page is capped, as without this pixel cap the image can be extremely large and proportionately makes the page look smaller */
-  max-width: 500px;   
-  max-height: 500px;     
-  display: block;     
-  margin: 1rem auto;  
+  max-width: 500px;
+  max-height: 500px;
+  display: block;
+  margin: 1rem auto;
 }
 
 /* Ensure images in the cards remain at the top with a fixed size */
@@ -84,11 +106,37 @@ body {
 
 /* css for title of pages to look large and uniform, and align center */
 .page-header {
+  background-color: rgb(233, 245, 227);
+  box-shadow: 0 0 0 2px #556B2F;
   font-size: 3.5rem;
-  color: #556B2F;        
+  color: #556B2F;
   text-align: center;
-  margin-top: 1rem; 
-  margin-bottom: 1rem; 
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  font-family: 'Merriweather';
+  font-weight: bold;
+}
+
+
+.category-header {
+  background-color: rgb(233, 245, 227);
+  box-shadow: 0 0 0 2px #556B2F;
+  font-size: 3.5rem;
+  color: #556B2F;
+  text-align: center;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  font-family: 'Merriweather';
+  font-weight: bold;
+}
+
+.navbar-brand {
+  background-color: rgb(233, 245, 227);
+  box-shadow: 0 0 0 2px rgb(255, 255, 255);
+  color: #556B2F;
+  text-align: center;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
   font-family: 'Merriweather';
   font-weight: bold;
 }
@@ -96,33 +144,40 @@ body {
 /* css for food event categories to look medium size and uniform, and align center*/
 .category-header {
   font-size: 2rem;
-  color: #556B2F;        
+  color: #556B2F;
   text-align: center;
-  margin-top: 1rem; 
-  margin-bottom: 1rem; 
+  margin-top: 1rem;
+  margin-bottom: 1rem;
   font-family: 'Roboto Mono';
   font-weight: bold;
 }
 
 /* css for titles of each event details row section to look medium sized and uniform, and align left */
 .detail-header {
+  font-weight: bold;
   font-size: 2rem;
-  color: #556B2F;        
+  color: #556B2F;
   text-align: left;
-  margin-top: 1rem; 
-  margin-bottom: 1rem; 
+  margin-top: 1rem;
+  margin-bottom: 1rem;
   font-family: 'Roboto Mono';
 }
 
+
 /* change font of descriptions */
-.descriptive {
+.event-descriptive {
   font-family: 'Raleway';
+  color: #000000;
+  line-height: 1.6;
+  margin: 0 0 1rem 0;
+  padding-left: 2rem;
+  padding-right: 2rem;
 }
 
 /* change navbar visually */
 .navbar {
   font-family: 'Roboto Mono';
-  background-color: rgb(198, 221, 187);  
+  background-color: rgb(198, 221, 187);
 }
 
 /* change searchbar placeholder text font */
@@ -140,7 +195,7 @@ body {
 /* change search feature text */
 .text-center {
   font-family: 'Merriweather';
-  color:  #008b35;
+  color: #008b35;
   font-weight: bold;
 }
 
@@ -149,9 +204,8 @@ body {
   color: #008b35;
 }
 
-.container-footer
-{
-  background-color:  rgb(217, 240, 206);
+.container-footer {
+  background-color: rgb(217, 240, 206);
 }
 
 .container-error {
@@ -160,20 +214,20 @@ body {
   color: #556B2F;
   padding-left: 0.75rem;
   padding-right: 0.75rem;
-  display:flex;
-  justify-content:center;
+  display: flex;
+  justify-content: center;
 }
 
 /* change card font for the descriptions */
 .card-body {
   font-family: 'Raleway';
-  color: #008b35;  
+  color: #008b35;
 }
 
 /* change card text font and colour for booking ID and booked on time */
 .card-text-info {
   font-family: 'Merriweather';
-  color: #008b35;  
+  color: #008b35;
 }
 
 /* change form font */
@@ -189,17 +243,17 @@ form {
 }
 
 .cancel-event {
-  color: #dc3545 !important; 
+  color: #dc3545 !important;
   font-weight: 600;
 }
 
 .reopen-event {
-  color: var(--bs-success) !important; 
+  color: var(--bs-success) !important;
   font-weight: 600;
 }
 
 .warning-text {
-  color: #dc3545; 
+  color: #dc3545;
   font-weight: 600;
 }
 
@@ -219,14 +273,13 @@ footer {
   font-weight: bold;
 }
 
-.clamp-5
-{
+.clamp-5 {
   display: -webkit-box;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 5;
   overflow: hidden;
-  line-height: 1.25rem;              
-  min-height: calc(1.25rem * 5);    
+  line-height: 1.25rem;
+  min-height: calc(1.25rem * 5);
   white-space: normal;
   word-break: break-word;
 }
@@ -249,20 +302,17 @@ footer {
 
 
 /* ensure visually there is a separation from the box of the footer bar, and the footer of the entire webpage */
-.foodievent-footer
-{
-background-color: rgb(211, 231, 201);
-font-family: 'Merriweather';
+.foodievent-footer {
+  background-color: rgb(211, 231, 201);
+  font-family: 'Merriweather';
 }
 
-.card-search
-{
+.card-search {
   background-color: rgb(211, 231, 201);
 }
 
 /* offset container-flex expanding offscreen through use of padding */
-.container-flex
-{
+.container-flex {
   padding-left: 0.75rem;
   padding-right: 0.75rem;
 }
@@ -289,10 +339,10 @@ font-family: 'Merriweather';
 }
 
 /* Alert css to fit theme of FoodieVent website */
-.alert {         
+.alert {
   border: none;
   border-left: 6px solid #198754;
-  box-shadow: 0 8px 24px rgba(0,0,0,.08);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, .08);
   font-family: 'Roboto Mono';
   font-weight: 600;
 }
