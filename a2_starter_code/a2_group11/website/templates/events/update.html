@@ -1,92 +1,78 @@
 {% extends 'base.html' %}
 <!--This is extending the basic layout already in base.html-->
 
-{% from 'bootstrap5/form.html' import render_form %}
+{% from 'bootstrap5/form.html' import render_field %}
 <!--Ensures consistent bootstrap-->
 {% block content %}
 
 <!-- Event update page container -->
 <div class="container-create">
-  <!-- Jumbotron banner(large banner ) for update event page-->
   <div class="p-5 creationjumbotronimage rounded-3">
-    <div class="jumbotronback container-fluid py-5 ">
-      <!-- Page title-->
+    <div class="jumbotronback container-fluid py-5">
       <h1 class="display-5 fw-bold">Update an Event</h1>
-      <!-- Description-->
-      <p class="col-md-8 fs-4">At FoodieVent, it's not just an event. Share memories, bring people
-        together. Enjoy food, drinks, and company. Update your pre-existing event here.</p>
+      <p class="col-md-8 fs-4">
+        At FoodieVent, it's not just an event. Share memories, bring people together.
+        Enjoy food, drinks, and company. Update your pre-existing event here.
+      </p>
     </div>
   </div>
 
-  <!-- Form section -->
   <div class="row mt-5">
-    <!-- Renders the event update form -->
     <div class="col-12 col-md-10 col-lg-8 offset-md-2">
-      {{ render_form(form, button_map={'submit': 'success'}) }}
 
-      <div class="d-flex flex-wrap gap-2">
-        {% if event.status.name == 'CANCELLED' %}
-        <!-- Re-open Event button -->
-        <button type="button" class="btn btn-warning" data-bs-toggle="modal"
-          data-bs-target="#reopenEventModal{{ event.id }}">
-          Re-open Event
-        </button>
+      <form id = "update-form" method="POST" enctype="multipart/form-data">
 
-        <!-- Re-open Event Modal -->
-        <div class="modal fade" id="reopenEventModal{{ event.id }}" tabindex="-1" aria-labelledby="reopenEventLabel"
-          aria-hidden="true">
-          <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-              <div class="modal-header bg-warning">
-                <h1 class="modal-title fs-5" id="reopenEventLabel">Confirm Event Re-opening</h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-              </div>
-              <div class="modal-body">
-                <p>Are you sure you want to re-open this event?<br>
-                  <small>(Outdated events will be set to inactive, events with 0 tickets will be set to sold
-                    out.)</small>
-                </p>
-              </div>
-              <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No, keep cancelled</button>
-                <a href="{{ url_for('events.cancel', event_id=event.id) }}" class="btn btn-warning">Yes, re-open
-                  event</a>
-              </div>
-            </div>
-          </div>
+        <!-- Render all fields except cancel/reopen/submit -->
+        {% for field in form if field.name not in ['cancel_event', 'reopen_event', 'submit'] %}
+        {{ render_field(field) }}
+        {% endfor %}
+
+        <!-- Show only one checkbox based on enum status -->
+        <div class="mb-3 mt-3">
+          {% if event.status.name == 'OPEN' %}
+          <p class="warning-text">WARNING: All bookings for this event will be cancelled and refunded if this event is
+            cancelled.
+            You are able to re-open a cancelled event.
+            However, cancellation of bookings and refunding of payments is final and cannot be undone.
+            Please ensure you have considered this decision carefully, as it will impact your customerbase.</p>
+          {{ form.cancel_event }}
+          {{ form.cancel_event.label(class="cancel-event") }}
+          {% elif event.status.name == 'CANCELLED' %}
+          {{ form.reopen_event }}
+          {{ form.reopen_event.label(class="reopen-event") }}
+          {% endif %}
         </div>
 
-        {% else %}
-        <!-- Cancel Event button -->
-        <button type="button" class="btn btn-danger" data-bs-toggle="modal"
-          data-bs-target="#cancelEventModal{{ event.id }}">
-          Cancel Event
+        <button type="button" class="btn btn-success mt-3" data-bs-toggle="modal" data-bs-target="#confirmUpdate">
+          Update Event
         </button>
+      </form>
 
-        <!-- Cancel Event Modal -->
-        <div class="modal fade" id="cancelEventModal{{ event.id }}" tabindex="-1" aria-labelledby="cancelEventLabel"
-          aria-hidden="true">
-          <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-              <div class="modal-header bg-danger text-white">
-                <h1 class="modal-title fs-5" id="cancelEventLabel">Confirm Event Cancellation</h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-              </div>
-              <div class="modal-body">
-                <p>Are you sure you want to cancel this event?<br>
-                  This action is final and cannot be undone.
-                </p>
-              </div>
-              <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No, keep event</button>
-                <a href="{{ url_for('events.cancel', event_id=event.id) }}" class="btn btn-danger">Yes, cancel event</a>
-              </div>
+      <div class="modal fade" id="confirmUpdate" tabindex="-1" aria-labelledby="confirmUpdateLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content">
+            <div class="modal-header warning-text">
+              <h5 class="modal-title" id="confirmUpdateLabel">Are you sure about these changes?</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <div class="modal-body warning-text">
+              Changes to this event will be enacted immediately. Please carefully consider your changes before
+              confirming your submission.
+            </div>
+
+            <div class="modal-footer">
+              <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancel</button>
+              <!-- This submits the page form -->
+              <button type="submit" class="btn btn-success" form="update-form">Update changes</button>
             </div>
           </div>
         </div>
       </div>
+
+      </form>
+      
     </div>
   </div>
-
-  {% endif %}
-  {% endblock %}
+</div>
+{% endblock %}

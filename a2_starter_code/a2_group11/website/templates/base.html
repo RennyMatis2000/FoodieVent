@@ -72,14 +72,14 @@
                             <input class="form-control me-2 searchbar" type="search" name="search"
                             placeholder="Search FoodieVent"
                             aria-label="Search">
-                            <button class="btn btn-outline-success" type="submit">Search</button>
+                            <button class="btn btn-success" type="submit">Search</button>
                         </form>
                     </div>
                 </div>
             </nav>
             <!-- Code for using Flask flash -->
              <div class="container-fluid mt-2">
-                {% with flashes = get_flashed_messages(with_categories=True) %}
+                {% with flashes = get_flashed_messages(with_categories=true, category_filter=['success','info','warning','danger']) %}
                 {% if flashes %}
                 {% for category, message in flashes %}
                 <div class="alert alert-{{ 'warning' if not category else category }} alert-dismissible fade show" role="alert">

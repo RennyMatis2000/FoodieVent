@@ -188,6 +188,21 @@ form {
   color: #556B2F;
 }
 
+.cancel-event {
+  color: #dc3545 !important; 
+  font-weight: 600;
+}
+
+.reopen-event {
+  color: var(--bs-success) !important; 
+  font-weight: 600;
+}
+
+.warning-text {
+    color: #dc3545; 
+  font-weight: 600;
+}
+
 /* change font of the comment section */
 .list-group-item {
   font-family: 'Roboto Mono';
@@ -204,6 +219,18 @@ footer {
   font-weight: bold;
 }
 
+.clamp-5
+{
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 5;
+  overflow: hidden;
+  line-height: 1.25rem;              
+  min-height: calc(1.25rem * 5);    
+  white-space: normal;
+  word-break: break-word;
+}
+
 /* change font and colour of all modal popups */
 .modal-content {
   font-family: 'Roboto Mono';
@@ -214,6 +241,12 @@ footer {
 .btn-success {
   font-family: 'Roboto Mono';
 }
+
+/* change all buttons to display Roboto Mono font */
+.btn-danger {
+  font-family: 'Roboto Mono';
+}
+
 
 /* ensure visually there is a separation from the box of the footer bar, and the footer of the entire webpage */
 .foodievent-footer

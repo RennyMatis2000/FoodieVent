@@ -84,8 +84,51 @@ def update(event_id):
         event.provide_takeaway = form.provide_takeaway.data
         event.category_type = form.category_type.data
 
+        message = ("Successfully updated Food and Drink Festival event.")
+        prev_status = event.status
+
+        # --- Status actions ---
+        if form.cancel_event.data:
+            # Only restock + cancel orders the first time we move to CANCELLED
+            if prev_status != EventStatus.CANCELLED:
+                # Get ACTIVE orders holding inventory
+                active_orders = (
+                    [orders for orders in getattr(event, "orders", []) if orders.ticket_status == TicketStatus.ACTIVE]
+                    if hasattr(event, "orders")
+                    else db.session.scalars(
+                        db.select(Order).where(
+                            Order.event_id == event.id,
+                            Order.ticket_status == TicketStatus.ACTIVE
+                        )
+                    ).all()
+                )
+
+                tickets_to_return = sum((orders.tickets_purchased or 0) for orders  in active_orders)
+                total_refund = sum((orders.purchased_amount or 0) for orders  in active_orders) 
+
+                # Return tickets to availability
+                event.total_tickets = (event.total_tickets or 0) + (tickets_to_return or 0)
+
+                # Cancel those orders so they stop holding inventory
+                for orders in active_orders:
+                    orders .ticket_status = TicketStatus.CANCELLED
+
+                message = (
+                    f"Successfully updated event. Event has been cancelled. "
+                    f"{tickets_to_return} tickets have been returned. Total amount returned: ${total_refund}"
+                )
+            else:
+                message = "Event was already cancelled. Details updated."
+
+            event.status = EventStatus.CANCELLED
+
+        elif form.reopen_event.data:
+            if prev_status == EventStatus.CANCELLED:
+                event.status = EventStatus.OPEN
+                message = "Successfully updated event. Event has been re-opened."
+
         db.session.commit()
-        flash('Successfully updated Food and Drink Festival event', 'success')
+        flash(f'{message}', 'success')
         live_status()
         return redirect(url_for('events.show', event_id=event.id))
         # Always end with redirect when form is valid
@@ -123,6 +166,7 @@ def cancel_order(order_id):
     order = db.session.get(Order, order_id)
     if order.ticket_status != TicketStatus.CANCELLED:
         order.ticket_status = TicketStatus.CANCELLED
+        order.event.total_tickets = (order.event.total_tickets + order.tickets_purchased)
         db.session.commit()
         flash(f'The order #{order.id} has been cancelled.', 'success')
     elif order.ticket_status == TicketStatus.CANCELLED:
@@ -150,6 +194,7 @@ def purchase_tickets(event_id):
                 event_id=event.id,
                 user_id=current_user.id,
                 tickets_purchased=form.tickets_purchased.data,
+                purchase_ticket_price=event.ticket_price,
                 purchased_amount=event.ticket_price * form.tickets_purchased.data,
                 ticket_status = TicketStatus.ACTIVE,
                 booking_time= datetime.now()
@@ -160,11 +205,11 @@ def purchase_tickets(event_id):
 
             db.session.add(order)
             db.session.commit()
-            flash(f'Thank you for your purchase! Your order number is #{order.id}')
+            flash(f'Thank you for your purchase! Your order number is #{order.id}. {order.tickets_purchased} tickets have been purchased for ${order.purchased_amount}.')
             return redirect(url_for('users.display_booking_history'))
             # Always end with redirect when form is valid
     live_status()
-    return render_template('events/purchase.html', form=form, event=event)
+    return redirect(url_for('events.show', event_id=event.id))
 
 @event_bp.route('/<int:event_id>/comment', methods = ['GET', 'POST'])
 @login_required
@@ -211,15 +256,21 @@ def live_status():
 
     for order in orders:
         event_order = order.event 
-        if order.ticket_status == TicketStatus.CANCELLED:
-            if event_order.end_time and now > event_order.end_time:
-                new_ticketstatus = TicketStatus.INACTIVE
-            else:
-                new_ticketstatus = TicketStatus.CANCELLED
-        elif event_order.end_time and now <= event_order.end_time:
-            new_ticketstatus = TicketStatus.ACTIVE
-        else:
+
+        if event_order.status == EventStatus.CANCELLED:
+            new_ticketstatus = TicketStatus.CANCELLED
+        elif event_order.status == EventStatus.INACTIVE:
             new_ticketstatus = TicketStatus.INACTIVE
+        else:
+            if order.ticket_status == TicketStatus.CANCELLED:
+                if event_order.end_time and now > event_order.end_time:
+                    new_ticketstatus = TicketStatus.INACTIVE
+                else:
+                    new_ticketstatus = TicketStatus.CANCELLED
+            elif event_order.end_time and now <= event_order.end_time:
+                new_ticketstatus = TicketStatus.ACTIVE
+            else:
+                new_ticketstatus = TicketStatus.INACTIVE
 
         if order.ticket_status != new_ticketstatus:
             order.ticket_status = new_ticketstatus
