@@ -145,9 +145,10 @@
             }[event.status.name] %}
             <span class="badge {{ status_badge }}">Event Status: {{ event.status.name }}</span>
             <span class="badge bg-info">Tickets Remaining: {{ event.total_tickets }}</span>
+            <span class="badge bg-info">Start Time: {{ event.start_time.strftime('%Y-%m-%d %H:%M') }}</span>
+            <span class="badge bg-info">End Time: {{ event.end_time.strftime('%Y-%m-%d %H:%M') }}</span>
           </div>
-          <p class="card-text">Start Time: {{ event.start_time }}</p>
-          <p class="card-text">End Time: {{ event.end_time }}</p>
+          <hr>
           <p class="card-text clamp-5">{{ event.description }}</p>
         </div>
         <div class="card-footer"><a href="{{ url_for('events.show', event_id=event.id) }}" class="btn btn-success">

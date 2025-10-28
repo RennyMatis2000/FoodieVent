@@ -46,11 +46,12 @@
           'CANCELLED':'bg-danger'
           }[order.ticket_status.name] %}
           <span class="badge {{ ticket_badge }} mb-3">Ticket Status: {{ order.ticket_status.name }}</span>
-          <p class="card-text">Order Number: #{{ order.id }}</p>
-          <p class="card-text">Tickets: {{ order.tickets_purchased }}</p>
-          <p class="card-text">Price per ticket: ${{ order.event.ticket_price }}</p>
-          <p class="card-text">Amount paid: ${{ order.purchased_amount }}</p>
-          <p class="card-text">Booked at: {{ order.booking_time.strftime('%Y-%m-%d %H:%M') }}</p>
+          <p class="card-text"><i class="bi bi-book"></i> Order Number: #{{ order.id }}</p>
+          <p class="card-text"><i class="bi bi-ticket-fill"></i> Tickets: {{ order.tickets_purchased }}</p>
+          <p class="card-text"><i class="bi bi-cash-coin"></i> Price per ticket: ${{ order.event.ticket_price }}</p>
+          <p class="card-text"><i class="bi bi-cash-coin"></i> Amount paid: ${{ order.purchased_amount }}</p>
+          <p class="card-text"><i class="bi bi-calendar-check-fill"></i> Booked at: {{ order.booking_time.strftime('%Y-%m-%d %H:%M') }}</p>
+          <hr>
           <p class="card-text clamp-5">{{ order.event.description }}</p>
         </div>
 

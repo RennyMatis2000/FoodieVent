@@ -34,7 +34,7 @@ def login():
             nextp = request.args.get('next')
             if not nextp or not nextp.startswith('/'):
                 live_status()
-                flash(f"{user.first_name} {user.surname} has logged-in successfully.", 'success')
+                flash(f"{user.first_name} {user.surname} has logged-in successfully. Welcome to FoodieVent!", 'success')
                 return redirect(url_for('main.index'))
             return redirect(nextp)
 
@@ -55,7 +55,7 @@ def register():
         )
         db.session.add(user)
         db.session.commit()
-        print('Successfully registered')
+        flash(f"{user.first_name} {user.surname} has successfully registered an account for FoodieVent.", 'success')
         return redirect(url_for('auth.login'))
     return render_template('user.html', form=form, heading = 'Register an Account')
 
