@@ -1,5 +1,5 @@
 # import flask - from 'package' import 'Class'
-from flask import Flask, render_template
+from flask import Flask, render_template, request
 from flask_bootstrap import Bootstrap5
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
@@ -49,7 +49,6 @@ def create_app():
    def server_error(e):
     db.session.rollback()
     return render_template("500.html", error=e)
-
 
    from . import views
    app.register_blueprint(views.main_bp)

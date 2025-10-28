@@ -199,7 +199,7 @@ form {
 }
 
 .warning-text {
-    color: #dc3545; 
+  color: #dc3545; 
   font-weight: 600;
 }
 
@@ -261,7 +261,7 @@ font-family: 'Merriweather';
 }
 
 /* offset container-flex expanding offscreen through use of padding */
-.container-footer .border-bottom 
+.container-flex
 {
   padding-left: 0.75rem;
   padding-right: 0.75rem;
@@ -289,9 +289,7 @@ font-family: 'Merriweather';
 }
 
 /* Alert css to fit theme of FoodieVent website */
-.alert {
-  background: #e8f5ec;          
-  color: #146c43;               
+.alert {         
   border: none;
   border-left: 6px solid #198754;
   box-shadow: 0 8px 24px rgba(0,0,0,.08);

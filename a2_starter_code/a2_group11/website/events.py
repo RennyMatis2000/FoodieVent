@@ -114,9 +114,7 @@ def update(event_id):
                     orders .ticket_status = TicketStatus.CANCELLED
 
                 message = (
-                    f"Successfully updated event. Event has been cancelled. "
-                    f"{tickets_to_return} tickets have been returned. Total amount returned: ${total_refund}"
-                )
+                    f"Successfully updated event. Event has been cancelled. {tickets_to_return} tickets have been refunded and resupplied. Total amount refunded: ${total_refund}")
             else:
                 message = "Event was already cancelled. Details updated."
 
@@ -142,19 +140,19 @@ def cancel(event_id):
     # Fetch the event by ID
     event = db.session.get(Event, event_id)
     if event.creator_id != current_user.id:
-        flash(f'The event: {event.title} was not created by the currently logged in user.')
+        flash(f'The event: {event.title} was not created by the currently logged in user.', 'danger')
         return redirect(url_for('events.update', event_id=event.id))
 
     if event.status != EventStatus.CANCELLED:
         event.status = EventStatus.CANCELLED
         db.session.commit()
-        flash(f'The event: {event.title} has been cancelled.')
+        flash(f'The event: {event.title} has been cancelled.', 'success')
     elif event.status == EventStatus.CANCELLED:
         event.status = EventStatus.OPEN
         db.session.commit()
-        flash(f'The event: {event.title} has been re-opened. If this is an outdated event, the status will be inactive. If this event has 0 tickets, the status will be soldout.')
+        flash(f'The event: {event.title} has been re-opened. If this is an outdated event, the status will be inactive. If this event has 0 tickets, the status will be soldout.', 'success')
     else:
-        flash(f'The event: {event.title} cannot be cancelled, as it is already cancelled.')
+        flash(f'The event: {event.title} cannot be cancelled, as it is already cancelled.', 'success')
 
     return redirect(url_for('events.update', event_id=event.id))
 
@@ -169,12 +167,6 @@ def cancel_order(order_id):
         order.event.total_tickets = (order.event.total_tickets + order.tickets_purchased)
         db.session.commit()
         flash(f'The order #{order.id} has been cancelled.', 'success')
-    elif order.ticket_status == TicketStatus.CANCELLED:
-        order.ticket_status = TicketStatus.ACTIVE
-        db.session.commit()
-        flash(f'The order #{order.id} has been re-activated. If this event has already occured the ticket status will be inactive.', 'success')
-    else:
-        flash(f'The order: #{order_id} cannot be cancelled, as it is already cancelled.')
 
     return redirect(url_for('users.display_booking_history'))
 
@@ -184,12 +176,14 @@ def cancel_order(order_id):
 def purchase_tickets(event_id):
     event = db.session.get(Event, event_id)
     form = PurchaseTicketForm()
+
     if form.validate_on_submit():
         tickets = form.tickets_purchased.data
 
         if tickets > event.total_tickets:
-            flash(f'Order was unable to be booked, please enter a value less than the remaining amount of tickets. Tickets remaining: {event.total_tickets}.')
-        else:
+            flash(f'Order was unable to be booked, please enter a value less than the remaining amount of tickets. Tickets remaining: {event.total_tickets}.', 'danger')
+            return redirect(url_for('events.show', event_id=event.id))
+        elif tickets <= event.total_tickets:
             order = Order(
                 event_id=event.id,
                 user_id=current_user.id,
@@ -205,7 +199,7 @@ def purchase_tickets(event_id):
 
             db.session.add(order)
             db.session.commit()
-            flash(f'Thank you for your purchase! Your order number is #{order.id}. {order.tickets_purchased} tickets have been purchased for ${order.purchased_amount}.')
+            flash(f'Thank you for your purchase! Your order number is #{order.id}. {order.tickets_purchased} tickets have been purchased for ${order.purchased_amount}.', 'success')
             return redirect(url_for('users.display_booking_history'))
             # Always end with redirect when form is valid
     live_status()
@@ -225,7 +219,7 @@ def comment(event_id):
             event=event)
         db.session.add(comment)
         db.session.commit()
-        flash("Your comment has been added", "success")
+        flash("Your comment has been added.", "success")
 
     # using redirect sends a GET request to destination.show
     live_status()

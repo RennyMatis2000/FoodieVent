@@ -4,7 +4,7 @@
 <!--Importing bootstrap 5 form -->
 {% block content %}
 
-<div class="container">
+<div class="container-flex">
   <!--Event heading: displays title, category and vendors-->
   <div class="row mt-5 mb-3">
     <div class="col-md-12">
@@ -23,7 +23,7 @@
 
   <!-- Event details section  -->
   <div class="row">
-    <div class="col-md-12">
+    <div class="col-12 col-sm-12 col-md-6 col-lg-3">
       <div class="card my-3">
         <div class="card-body">
           <img class="card-img-top mb-2 mt-2" src="{{ event.image }}" alt="event image">
@@ -51,85 +51,70 @@
       </div>
     </div>
   </div>
-</div>
 
-<div class="modal fade" id="bookTicketsModal" tabindex="-1" aria-labelledby="bookTicketsLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <form id="purchaseForm" method="POST" action="{{ url_for('events.purchase_tickets', event_id=event.id) }}">
-        <div class="modal-header">
-          <h5 class="modal-title" id="bookTicketsLabel">Book Tickets</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
+  <!-- Book / Purchase modal (single) -->
+  <div class="modal fade" id="bookTicketsModal" tabindex="-1" aria-labelledby="bookTicketsLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <form id="purchaseForm" method="POST" action="{{ url_for('events.purchase_tickets', event_id=event.id) }}">
+          <div class="modal-header">
+            <h3 class="modal-title" id="bookTicketsLabel">Book Order by Purchasing Tickets</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
 
-        <div class="modal-body">
-          {{ purchase_form.hidden_tag() }} 
-          <div class="mb-3">
-            {{ render_field(purchase_form.tickets_purchased,
-            class="form-control",
-            id="tickets_purchased",
-            min="1",
-            max=event.total_tickets) }}
-            <div class="form-text">
-              Tickets remaining: {{ event.total_tickets }} | Price per ticket: ${{ '%.2f'|format(event.ticket_price) }}
+          <div class="modal-body">
+            {{ purchase_form.hidden_tag() }}
+
+            <div class="mb-3">
+              {{ render_field(purchase_form.tickets_purchased,
+              class="form-control",
+              id="tickets_purchased",
+              min="1",
+              max=event.total_tickets) }}
+              <div class="form-text mb-3">
+                Price per ticket: ${{ (event.ticket_price) }} | Tickets remaining: {{ event.total_tickets }}
+              </div>
+              <p class="warning-text mb-3">
+                Warning: Clicking "Confirm Purchase" will finalise the purchase of tickets and deduct money for your
+                payment.
+              </p>
             </div>
-        </div>
-    </div>
+          </div>
 
-    <div class="modal-footer">
-      <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancel</button>
-      <button type="button" class="btn btn-success" data-bs-toggle="modal" 
-      data-bs-target="#confirmPurchaseModal">Purchase</button>
-    </div>
-    </form>
-  </div>
-</div>
-</div>
-
-<hr>
-<!-- Comment section -->
-<div class="row mb-4">
-  <div class="col-12">
-    {{ render_form(form, "/events/{0}/comment".format(event.id), button_map={"submit": "success"}) }}
-  </div>
-</div>
-
-<div class="modal fade" id="confirmPurchaseModal" tabindex="-1" aria-labelledby="confirmPurchaseLabel"
-  aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title warning-text" id="confirmPurchaseLabel">Are you sure you want to purchase?</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-
-      <div class="modal-body warning-text">
-        Clicking "Confirm Purchase" will finalise the purchase of tickets and deduct money for your payment.
-      </div>
-
-      <div class="modal-footer">
-        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancel</button>
-        <button type="submit" class="btn btn-success" form="purchaseForm" name="{{ purchase_form.submit.name }}"
-          value="1">
-          {{ purchase_form.submit.label.text }}
-        </button>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancel</button>
+            {{ purchase_form.submit(class="btn btn-success") }}
+            {# or:
+            <button type="submit" class="btn btn-success" name="{{ purchase_form.submit.name }}" value="1">
+              {{ purchase_form.submit.label.text }}
+            </button>
+            #}
+          </div>
+        </form>
       </div>
     </div>
   </div>
-</div>
 
-
-<div class="row">
-  <div class="col-12">
-    {% for comment in event.comments %}
-    <div class="border-bottom pb-3 mb-3">
-      <b>
-        User {{ comment.user.first_name }} {{ comment.user.surname }}
-        <span class="ms-2 text-muted">posted at {{ comment.comment_date }}</span>
-      </b>
-      <p class="comment-body mb-0">{{ comment.contents }}</p>
+  <hr>
+  <!-- Comment section -->
+  <div class="row mb-4">
+    <div class="col-12 col-sm-12 col-md-6 col-lg-3">
+      {{ render_form(form, action=url_for('events.comment', event_id=event.id), button_map={"submit": "success"}) }}
     </div>
-    {% endfor %}
+  </div>
+
+  <div class="row">
+    <div class="col-12">
+      {% for comment in event.comments %}
+      <div class="border-bottom pb-3 mb-3">
+        <b>
+          User {{ comment.user.first_name }} {{ comment.user.surname }}
+          <span class="ms-2 text-muted">posted at {{ comment.comment_date }}</span>
+        </b>
+        <p class="comment-body mb-0">{{ comment.contents }}</p>
+      </div>
+      {% endfor %}
+    </div>
   </div>
 </div>
 {% endblock %}

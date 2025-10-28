@@ -28,12 +28,13 @@ def login():
             error = 'Incorrect password'
 
         if error:
-            flash(error)
+            flash(error, 'danger')
         else:
             login_user(user)
             nextp = request.args.get('next')
             if not nextp or not nextp.startswith('/'):
                 live_status()
+                flash(f"{user.first_name} {user.surname} has logged-in successfully.", 'success')
                 return redirect(url_for('main.index'))
             return redirect(nextp)
 
@@ -63,4 +64,6 @@ def register():
 def logout():
     logout_user()
     live_status()
+    user = db.session.scalar(db.select(User))
+    flash(f"{user.first_name} {user.surname} has logged out.", 'success')
     return redirect(url_for('main.index'))

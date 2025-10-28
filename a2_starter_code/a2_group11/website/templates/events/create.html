@@ -22,7 +22,7 @@
     <!--Centered viewing on medium and large screens-->
     <div class="col-12 col-md-10 col-lg-8 offset-md-2">
       <!-- Rendering forms using Flask WTF and Bootstrap 5 styling-->
-      <form method="POST" enctype="multipart/form-data">
+      <form method="POST" action="{{ url_for('events.create') }}" enctype="multipart/form-data">
         {% for field in form if field.name not in ['cancel_event', 'reopen_event', 'submit'] %}
         {{ render_field(field) }}
         {% endfor %}

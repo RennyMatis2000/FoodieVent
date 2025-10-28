@@ -20,7 +20,8 @@
   <div class="row mt-5">
     <div class="col-12 col-md-10 col-lg-8 offset-md-2">
 
-      <form id = "update-form" method="POST" enctype="multipart/form-data">
+      <form id="update-form" method="POST" action="{{ url_for('events.update', event_id=event.id) }}"
+        enctype="multipart/form-data">
 
         <!-- Render all fields except cancel/reopen/submit -->
         {% for field in form if field.name not in ['cancel_event', 'reopen_event', 'submit'] %}
@@ -30,11 +31,12 @@
         <!-- Show only one checkbox based on enum status -->
         <div class="mb-3 mt-3">
           {% if event.status.name == 'OPEN' %}
-          <p class="warning-text">WARNING: All bookings for this event will be cancelled and refunded if this event is
-            cancelled.
-            You are able to re-open a cancelled event.
-            However, cancellation of bookings and refunding of payments is final and cannot be undone.
-            Please ensure you have considered this decision carefully, as it will impact your customerbase.</p>
+          <p class="warning-text">WARNING: All bookings for this event
+          will be cancelled and refunded if this event is
+          cancelled.
+          You are able to re-open a cancelled event.
+          However, cancellation of bookings and refunding of payments is final and cannot be undone.
+          Please ensure you have considered this decision carefully, as it will impact your customerbase.</p>
           {{ form.cancel_event }}
           {{ form.cancel_event.label(class="cancel-event") }}
           {% elif event.status.name == 'CANCELLED' %}
@@ -69,9 +71,6 @@
           </div>
         </div>
       </div>
-
-      </form>
-      
     </div>
   </div>
 </div>
