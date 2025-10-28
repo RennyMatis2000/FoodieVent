@@ -37,29 +37,64 @@ def search():
 
 @main_bp.route('/food')
 def food():
-    filteredevents = (db.select(Event).where(Event.category_type == EventCategory.FOOD).order_by(Event.start_time))
+    filteredevents = (
+        db.select(Event)
+          .where(Event.category_type == EventCategory.FOOD)
+          .order_by(Event.start_time)
+    )
     events = db.session.scalars(filteredevents).all()
+    if not events:
+        flash("No Food events are available right now. Please create or wait for a Food event, or browse for a different category that might entice you.", "inline")
     live_status()
     return render_template('index.html', events=events, category='Food')
 
 @main_bp.route('/drink')
 def drink():
-    filteredevents = (db.select(Event).where(Event.category_type == EventCategory.DRINK).order_by(Event.start_time))
+    filteredevents = (
+        db.select(Event)
+          .where(Event.category_type == EventCategory.DRINK)
+          .order_by(Event.start_time)
+    )
     events = db.session.scalars(filteredevents).all()
+    if not events:
+        flash(
+            "No Drink events are available right now. Please create or wait for a Drink event, or browse for a different category that might entice you.",
+            "inline"
+        )
     live_status()
     return render_template('index.html', events=events, category='Drink')
 
+
 @main_bp.route('/cultural')
 def cultural():
-    filteredevents = (db.select(Event).where(Event.category_type == EventCategory.CULTURAL).order_by(Event.start_time))
+    filteredevents = (
+        db.select(Event)
+          .where(Event.category_type == EventCategory.CULTURAL)
+          .order_by(Event.start_time)
+    )
     events = db.session.scalars(filteredevents).all()
+    if not events:
+        flash(
+            "No Cultural events are available right now. Please create or wait for a Cultural event, or browse for a different category that might entice you.",
+            "inline"
+        )
     live_status()
     return render_template('index.html', events=events, category='Cultural')
 
+
 @main_bp.route('/dietary')
 def dietary():
-    filteredevents = (db.select(Event).where(Event.category_type == EventCategory.DIETARY).order_by(Event.start_time))
+    filteredevents = (
+        db.select(Event)
+          .where(Event.category_type == EventCategory.DIETARY)
+          .order_by(Event.start_time)
+    )
     events = db.session.scalars(filteredevents).all()
+    if not events:
+        flash(
+            "No Dietary events are available right now. Please create or wait for a Dietary event, or browse for a different category that might entice you.",
+            "inline"
+        )
     live_status()
     return render_template('index.html', events=events, category='Dietary')
 
