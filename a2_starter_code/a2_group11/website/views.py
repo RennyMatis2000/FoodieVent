@@ -20,12 +20,18 @@ def search():
         events = db.session.scalars(
             db.select(Event).where(Event.description.like(query)).order_by(Event.start_time)).all()  
         live_status()
-        if not events:  
-            flash('No events were found with a description that involves the text searched.')
-        return render_template('index.html', events=events)
+        if events:
+            live_status()
+            flash('Event has been found with a description that involves the text searched.', 'inline')
+            live_status()
+            return render_template('index.html', events=events)
+        elif not events:  
+            live_status()
+            flash('No events were found with a description that involves the text searched.','inline')
+            return render_template('index.html', events=events)
     else:
         live_status()
-        flash('No events were found with a description that involves the text searched.')
+        flash('Displaying all available events. Please enter text to search.','inline')
         return redirect(url_for('main.index'))
 
 

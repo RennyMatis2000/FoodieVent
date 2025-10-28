@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 <!--This is extending the basic layout already in base.html-->
-{% from 'bootstrap5/form.html' import render_form %}
+{% from 'bootstrap5/form.html' import render_form, render_field %}
 <!--Importing bootstrap 5 form -->
 {% block content %}
 
@@ -34,15 +34,16 @@
           <span class="badge bg-success">Tickets Remaining: {{event.total_tickets}}</span>
           <!-- Description of the event-->
           <p>{{event.description}}</p>
-          {% if event.status.name != 'SOLDOUT' %}
+          <p>Price per ticket: ${{ event.ticket_price }}</p>
+          {% if event.status.name == 'OPEN' %}
           <!-- Book now button only displays if the event status is not sold out-->
-          <a href="{{ url_for('events.purchase_tickets', event_id=event.id) }}" class="btn btn-success">
+          <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#bookTicketsModal">
             Book Now
-          </a>
+          </button>
           {% endif %}
           <!--If the signed in user is the creator of the event, display update and cancel buttons-->
           {% if current_user.id == event.creator_id %}
-          <a href="{{ url_for('events.update', event_id=event.id) }}" class="btn btn-primary">
+          <a href="{{ url_for('events.update', event_id=event.id) }}" class="btn btn-success">
             Update Event
           </a>
           {% endif %}
@@ -52,6 +53,39 @@
   </div>
 </div>
 
+<div class="modal fade" id="bookTicketsModal" tabindex="-1" aria-labelledby="bookTicketsLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form id="purchaseForm" method="POST" action="{{ url_for('events.purchase_tickets', event_id=event.id) }}">
+        <div class="modal-header">
+          <h5 class="modal-title" id="bookTicketsLabel">Book Tickets</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+
+        <div class="modal-body">
+          {{ purchase_form.hidden_tag() }} 
+          <div class="mb-3">
+            {{ render_field(purchase_form.tickets_purchased,
+            class="form-control",
+            id="tickets_purchased",
+            min="1",
+            max=event.total_tickets) }}
+            <div class="form-text">
+              Tickets remaining: {{ event.total_tickets }} | Price per ticket: ${{ '%.2f'|format(event.ticket_price) }}
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-footer">
+      <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancel</button>
+      <button type="button" class="btn btn-success" data-bs-toggle="modal" 
+      data-bs-target="#confirmPurchaseModal">Purchase</button>
+    </div>
+    </form>
+  </div>
+</div>
+</div>
+
 <hr>
 <!-- Comment section -->
 <div class="row mb-4">
@@ -59,6 +93,31 @@
     {{ render_form(form, "/events/{0}/comment".format(event.id), button_map={"submit": "success"}) }}
   </div>
 </div>
+
+<div class="modal fade" id="confirmPurchaseModal" tabindex="-1" aria-labelledby="confirmPurchaseLabel"
+  aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title warning-text" id="confirmPurchaseLabel">Are you sure you want to purchase?</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+
+      <div class="modal-body warning-text">
+        Clicking "Confirm Purchase" will finalise the purchase of tickets and deduct money for your payment.
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancel</button>
+        <button type="submit" class="btn btn-success" form="purchaseForm" name="{{ purchase_form.submit.name }}"
+          value="1">
+          {{ purchase_form.submit.label.text }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
 
 <div class="row">
   <div class="col-12">

@@ -255,7 +255,7 @@ class EventForm(FlaskForm):
     description = StringField('Enter Description of this event', validators=[InputRequired()])
 
     # NOTE: we will toggle FileRequired at runtime (create vs update)
-    image = FileField('Destination Image')  # validators set in __init__ below
+    image = FileField('Event Image')  # validators set in __init__ below
 
     start_time = DateTimeLocalField("Start time", format="%Y-%m-%dT%H:%M", validators=[DataRequired()])
     end_time   = DateTimeLocalField("End time",   format="%Y-%m-%dT%H:%M", validators=[DataRequired()])
@@ -275,6 +275,8 @@ class EventForm(FlaskForm):
     free_sampling = BooleanField("Free sampling?")
     provide_takeaway = BooleanField("Provide takeaway?")
     category_type = SelectField("Category", choices=[(e.name, e.value) for e in EventCategory], validators=[DataRequired()])
+    cancel_event = BooleanField("Cancel this event?")
+    reopen_event = BooleanField("Re-open this event?")
 
     # Submission button
     submit = SubmitField("Create/Update Event")

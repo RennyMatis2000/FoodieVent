@@ -80,6 +80,7 @@ class Order(db.Model):
     booking_time = db.Column(db.DateTime, default=datetime.now, nullable=False)
     purchased_amount = db.Column(Numeric(10, 2), nullable=False)
     ticket_status = db.Column(db.Enum(TicketStatus), default=TicketStatus.ACTIVE)
+    purchase_ticket_price = db.Column(db.Numeric(10, 2))
 
     # Foreign keys -> now point to users.id / events.id
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)

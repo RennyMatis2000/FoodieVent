@@ -13,7 +13,7 @@
     {% if current_user.is_authenticated %}
     <p class="col-md-8 fs-4">
       Welcome back, {{ current_user.first_name }} {{ current_user.surname }}.
-      Browse your booking history for upcoming events, or spread the fun by hosting an event.
+      Browse your booking history for upcoming Food and Drink events, or spread the fun by hosting a Food and Drink event.
     </p>
     <a href="{{ url_for('users.display_booking_history') }}" class="btn btn-success btn-lg">Booking History</a>
     <a href="{{ url_for('events.create') }}" class="btn btn-success btn-lg">Create Event</a>
@@ -72,12 +72,7 @@
         <form action="{{ url_for('main.search') }}#container-search" method="get" role="search">
           <h2 class="text-center mb-3">Don't skip an opportunity! Search FoodieVent.</h2>
           <div class="input-group input-group-lg">
-            <input
-              type="search"
-              name="search"
-              id="SearchForm"
-              class="form-control"
-              placeholder="Search FoodieVent"
+            <input type="search" name="search" id="SearchForm" class="form-control" placeholder="Search FoodieVent"
               aria-label="Search FoodieVent">
             <button type="submit" class="btn btn-success">Search</button>
           </div>
@@ -92,7 +87,7 @@
   <!-- Second row -->
   <div class="row">
     <!-- Title of events -->
-    <h1 id="page-header" class="page-header">All recent upcoming Food and Drink Festivals</h1>
+    <h1 id="page-header" class="page-header">All recent upcoming Food and Drink events</h1>
 
     <!-- Category filter dropdown, featuring specific event types that jump the screen to the category sections -->
     <div class="dropdown mb-4 text-center">
@@ -112,6 +107,20 @@
     <!-- Food event section row -->
     <div class="row">
       <h2 id="upcoming-event" class="category-header">All Upcoming {{ category }} Events </h2>
+      {% with messages = get_flashed_messages(with_categories=true, category_filter=['inline']) %}
+      {% if messages %}
+      <div class="row">
+        <div class="col-12">
+          {% for _, message in messages %}
+          <div class="alert alert-info alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+      {% endif %}
+      {% endwith %}
     </div>
 
     <div class="row">
@@ -121,10 +130,19 @@
           <img class="card-img-top" src="{{ event.image }}" alt="event picture">
           <div class="card-body">
             <h5 class="card-title">{{ event.title }}</h5>
-            <span class="badge bg-success">{{ event.status.name }}</span>
+            <div class="d-flex align-items-center gap-2 flex-wrap mb-2">
+              {% set status_badge = {
+              'OPEN': 'bg-success',
+              'INACTIVE': 'bg-secondary',
+              'SOLDOUT': 'bg-warning text-dark',
+              'CANCELLED': 'bg-danger'
+              }[event.status.name] %}
+              <span class="badge {{ status_badge }}">Event Status: {{ event.status.name }}</span>
+              <span class="badge bg-success">Tickets Remaining: {{ event.total_tickets }}</span>
+            </div>
             <p class="card-text">Start Time: {{ event.start_time }}</p>
             <p class="card-text">End Time: {{ event.end_time }}</p>
-            <p class="card-text">{{ event.description }}</p>
+            <p class="card-text clamp-5">{{ event.description }}</p>
           </div>
           <div class="card-footer"><a href="{{ url_for('events.show', event_id=event.id) }}" class="btn btn-success">
               View

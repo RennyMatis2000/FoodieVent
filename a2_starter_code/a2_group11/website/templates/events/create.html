@@ -1,30 +1,35 @@
 {% extends 'base.html' %}
 <!--This is extending the basic layout already in base.html -->
-{% from 'bootstrap5/form.html' import render_form %}
+{% from 'bootstrap5/form.html' import render_field %}
 <!--Ensures consistent bootstrap-->
 {% block content %}
 
 <!-- The container for event creation page -->
 <div class="container-create">
-<!-- Event Creation and Update page Jumbotron(large banner) -->
-<div class="p-5 creationjumbotronimage rounded-3">
+  <!-- Event Creation and Update page Jumbotron(large banner) -->
+  <div class="p-5 creationjumbotronimage rounded-3">
     <div class="jumbotronback container-fluid py-5 ">
       <!--Page title-->
-        <h1 class="display-5 fw-bold">Create an Event</h1>
-        <!--Text introducing the page-->
-        <p class="col-md-8 fs-4">At FoodieVent, it's not just an event. Share memories, bring people
-            together. Enjoy food, drinks, and company. Start creating now.</p>
-    </div>
-</div>
-
-<!-- Creating events form section  -->
-    <div class="row mt-5">
-      <!--Centered viewing on medium and large screens-->
-      <div class="col-12 col-md-10 col-lg-8 offset-md-2">
-        <!-- Rendering forms using Flask WTF and Bootstrap 5 styling-->
-        {{ render_form(form, button_map={'submit': 'success'}) }}
-      </div>
+      <h1 class="display-5 fw-bold">Create an Event</h1>
+      <!--Text introducing the page-->
+      <p class="col-md-8 fs-4">At FoodieVent, it's not just an event. Share memories, bring people
+        together. Enjoy food, drinks, and company. Start creating now.</p>
     </div>
   </div>
+
+  <!-- Creating events form section  -->
+  <div class="row mt-5">
+    <!--Centered viewing on medium and large screens-->
+    <div class="col-12 col-md-10 col-lg-8 offset-md-2">
+      <!-- Rendering forms using Flask WTF and Bootstrap 5 styling-->
+      <form method="POST" enctype="multipart/form-data">
+        {% for field in form if field.name not in ['cancel_event', 'reopen_event', 'submit'] %}
+        {{ render_field(field) }}
+        {% endfor %}
+        {{ render_field(form.submit, class="btn btn-success") }}
+      </form>
+    </div>
+  </div>
+</div>
 
 {% endblock %}
