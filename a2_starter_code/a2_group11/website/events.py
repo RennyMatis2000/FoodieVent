@@ -219,11 +219,11 @@ def comment(event_id):
             event=event)
         db.session.add(comment)
         db.session.commit()
-        flash("Your comment has been added.", "success")
+        flash("Your comment has been posted.", "comment")
 
     # using redirect sends a GET request to destination.show
     live_status()
-    return redirect(url_for('events.show', event_id=event_id))
+    return redirect(url_for('events.show', event_id=event_id) + "#comments")
 
 def live_status():
     now = datetime.now()

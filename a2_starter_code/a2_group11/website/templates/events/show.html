@@ -4,117 +4,235 @@
 <!--Importing bootstrap 5 form -->
 {% block content %}
 
+<!--Event details page Jumbotron-->
+<div class="p-5 detailjumbotronimage rounded-3" style="background-image: url('{{ event.image }}');">
+  <div class="container-fluid py-5">
+    <h1 class="display-5 fw-bold">Event Details</h1>
+    <p class="col-md-8 fs-4">Are you interested about {{ event.title }}? Well we're excited to help you out. Please read
+      below for more specific
+      details and how to book tickets to attend {{ event.title }}.</p>
+  </div>
+</div>
+
 <div class="container-flex">
-  <!--Event heading: displays title, category and vendors-->
-  <div class="row mt-5 mb-3">
-    <div class="col-md-12">
-      <!--Left side displaying event titles and categories -->
-      <div class="float-left">
-        <h1 class="mb-0">{{event.title}}</h1>
-        <p>Located at, {{event.venue}}</p>
-      </div>
-      <!--Right side displaying vendor information-->
-      <div class="float-right text-right">
-        <p class="mb-0">Vendors attending: </p>
-        <h2 id="Vendors">{{event.vendor_names}}</h2>
+  <!--Event details page title -->
+  <div class="col-12 col-md-4 offset-md-4">
+    <div class="row">
+      <div>
+        <h1 id="page-header" class="page-header">{{ event.title }}</h1>
       </div>
     </div>
   </div>
 
   <!-- Event details section  -->
   <div class="row">
-    <div class="col-12 col-sm-12 col-md-6 col-lg-3">
-      <div class="card my-3">
-        <div class="card-body">
-          <img class="card-img-top mb-2 mt-2" src="{{ event.image }}" alt="event image">
-          <h5 class="mt-0">Event Category: {{ event.category_type.name }}</h5>
-          <h5 class="mt-0">Free Sampling: {{ event.free_sampling }}</h5>
-          <h5 class="mt-0">Provides Takeaway: {{ event.provide_takeaway }}</h5>
-          <span class="badge bg-success">Event Status: {{event.status.name}}</span>
-          <span class="badge bg-success">Tickets Remaining: {{event.total_tickets}}</span>
-          <!-- Description of the event-->
-          <p>{{event.description}}</p>
-          <p>Price per ticket: ${{ event.ticket_price }}</p>
-          {% if event.status.name == 'OPEN' %}
-          <!-- Book now button only displays if the event status is not sold out-->
-          <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#bookTicketsModal">
-            Book Now
-          </button>
-          {% endif %}
-          <!--If the signed in user is the creator of the event, display update and cancel buttons-->
-          {% if current_user.id == event.creator_id %}
-          <a href="{{ url_for('events.update', event_id=event.id) }}" class="btn btn-success">
-            Update Event
-          </a>
-          {% endif %}
-        </div>
-      </div>
-    </div>
-  </div>
+    <div class="col-12 col-md-6 offset-md-3">
+      <div id="event-detail-card" class="card my-3">
+        <img src="{{ event.image }}" alt="{{ event.title }}" class="card-img-top">
+        <div class="card-body event-card">
 
-  <!-- Book / Purchase modal (single) -->
-  <div class="modal fade" id="bookTicketsModal" tabindex="-1" aria-labelledby="bookTicketsLabel" aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <form id="purchaseForm" method="POST" action="{{ url_for('events.purchase_tickets', event_id=event.id) }}">
-          <div class="modal-header">
-            <h3 class="modal-title" id="bookTicketsLabel">Book Order by Purchasing Tickets</h5>
-              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          <div class="card-body event-card">
+            {% set category_badge = {
+            'FOOD': 'bg-success',
+            'DRINK': 'bg-primary',
+            'CULTURAL': 'bg-warning',
+            'DIETARY': 'bg-danger'
+            }[event.category_type.name] %}
+            <span class="badge {{category_badge }} mb-3">Event Category: {{ event.category_type.name }}</span>
+            {% set status_badge = {
+            'OPEN': 'bg-success',
+            'INACTIVE': 'bg-secondary',
+            'SOLDOUT': 'bg-warning',
+            'CANCELLED': 'bg-danger'
+            }[event.status.name] %}
+            <span class="badge {{ status_badge }} mb-3">Event Status: {{ event.status.name }}</span>
+            <span class="badge bg-info mb-3">Tickets Remaining: {{ event.total_tickets }}</span>
+            <span class="badge bg-info mb-3">Price per ticket: ${{ event.ticket_price }}</span>
+            <span class="badge bg-info mb-3">Start Time: {{ event.start_time.strftime('%Y-%m-%d %H:%M') }}</span>
+            <span class="badge bg-info mb-3">End Time: {{ event.end_time.strftime('%Y-%m-%d %H:%M') }}</span>
+            <h5 class="mt-2">{{ event.description }}</h5>
           </div>
 
-          <div class="modal-body">
-            {{ purchase_form.hidden_tag() }}
+          {% set can_book = (event.status.name == 'OPEN') %}
+          {% set can_update = (current_user.id == event.creator_id) %}
 
-            <div class="mb-3">
-              {{ render_field(purchase_form.tickets_purchased,
-              class="form-control",
-              id="tickets_purchased",
-              min="1",
-              max=event.total_tickets) }}
-              <div class="form-text mb-3">
-                Price per ticket: ${{ (event.ticket_price) }} | Tickets remaining: {{ event.total_tickets }}
+          <div class="card-footer">
+            <div class="row g-2">
+              {% if can_book %}
+              <div class="col">
+                <button type="button" class="btn btn-success w-100" data-bs-toggle="modal"
+                  data-bs-target="#bookTicketsModal">
+                  Book Now
+                </button>
               </div>
-              <p class="warning-text mb-3">
-                Warning: Clicking "Confirm Purchase" will finalise the purchase of tickets and deduct money for your
-                payment.
-              </p>
+              {% endif %}
+
+              {% if can_update %}
+              <div class="col">
+                <a href="{{ url_for('events.update', event_id=event.id) }}" class="btn btn-success w-100">
+                  Update Event
+                </a>
+              </div>
+              {% endif %}
+
+              {% if not can_book and not can_update %}
+              <div class="col-12">
+                <p class="warning-text mb-0">
+                  Event is unavailable for booking. View event status for details.
+                </p>
+              </div>
+              {% endif %}
             </div>
           </div>
 
-          <div class="modal-footer">
-            <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancel</button>
-            {{ purchase_form.submit(class="btn btn-success") }}
-            {# or:
-            <button type="submit" class="btn btn-success" name="{{ purchase_form.submit.name }}" value="1">
-              {{ purchase_form.submit.label.text }}
-            </button>
-            #}
+          <!-- Title of event status row-->
+          <div class="row">
+            <h2 class="detail-header">Date</h2>
+            <p class="descriptive event-descriptive">
+              {{ event.title }} will be held between {{ event.start_time }} to {{ event.end_time }}. We recommend early
+              arrival, as events held at FoodieVent often have eager participants resulting in queueing on event
+              entrances.
+              For events that end late at night, it is recommended to prepare transport for your departure prior to the
+              event.
+            </p>
+
+            <!-- Title of venue and vendors row-->
+            <h2 class="detail-header">Venue and Vendors </h2>
+            <p class="descriptive event-descriptive">{{event.title}} will be located at {{ event.venue }} where vendors
+              {{
+              event.vendor_names }} will be
+              participating to provide you an
+              excellent event.
+            </p>
           </div>
-        </form>
+
+          <!-- Title of tickets row-->
+          <div class="row">
+            <h2 class="detail-header">Tickets</h2>
+            <p class="descriptive event-descriptive">
+              The tickets at {{ event.title }} cost ${{ event.ticket_price }}. There are {{ event.total_tickets}}
+              available
+              tickets remaining for purchase, if you wish to participate in {{ event.title }}.
+            </p>
+
+          <!-- Sampling in event row -->
+          <div class="row">
+            <h2 class="detail-header">Sampling</h2>
+            {% if event.free_sampling %}
+            <p class="descriptive event-descriptive">
+              {{ event.title }} will be offering free sampling.
+            </p>
+            {% else %}
+            <p class="descriptive event-descriptive">
+              {{ event.title }} will not be offering free sampling.
+            </p>
+            {% endif %}
+          </div>
+
+          <!-- Takeaway in event row -->
+          <div class="row">
+            <h2 class="detail-header">Takeaway</h2>
+            {% if event.provide_takeaway %}
+            <p class="descriptive event-descriptive">
+              {{ event.title }} will be providing takeaway.
+            </p>
+            {% else %}
+            <p class="descriptive event-descriptive">
+              {{ event.title }} will not be providing takeaway.
+            </p>
+            {% endif %}
+          </div>
+
+
+          <!-- Book / Purchase modal (single) -->
+          <div class="modal fade" id="bookTicketsModal" tabindex="-1" aria-labelledby="bookTicketsLabel"
+            aria-hidden="true">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <form id="purchaseForm" method="POST"
+                  action="{{ url_for('events.purchase_tickets', event_id=event.id) }}">
+                  <div class="modal-header">
+                    <h3 class="modal-title" id="bookTicketsLabel">Book Order by Purchasing Tickets</h5>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                  </div>
+
+                  <div class="modal-body">
+                    {{ purchase_form.hidden_tag() }}
+
+                    <div class="mb-3">
+                      {{ render_field(purchase_form.tickets_purchased,
+                      class="form-control",
+                      id="tickets_purchased",
+                      min="1",
+                      max=event.total_tickets) }}
+                      <div class="form-text mb-3">
+                        Price per ticket: ${{ (event.ticket_price) }} | Tickets remaining: {{ event.total_tickets }}
+                      </div>
+                      <p class="warning-text mb-3">
+                        Warning: Clicking "Confirm Purchase" will finalise the purchase of tickets and deduct money for
+                        your
+                        payment.
+                      </p>
+                    </div>
+                  </div>
+
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancel</button>
+                    {{ purchase_form.submit(class="btn btn-success") }}
+                    {# or:
+                    <button type="submit" class="btn btn-success" name="{{ purchase_form.submit.name }}" value="1">
+                      {{ purchase_form.submit.label.text }}
+                    </button>
+                    #}
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+
+          <hr id="comments">
+
+          <!-- Comment section -->
+          <div class="row">
+            <div class="col-12">
+              <h2>
+                {{ render_form(form, action=url_for('events.comment', event_id=event.id), button_map={"submit":
+                "success"})
+                }}
+              </h2>
+            </div>
+          </div>
+
+          <!-- Comment flashes (only for comment-related categories) -->
+          {% with messages = get_flashed_messages(with_categories=true, category_filter=['comment', 'comment-error']) %}
+          {% if messages %}
+          {% for category, message in messages %}
+          <div class="alert {{ 'alert-success' if category == 'comment' }}" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+          </div>
+          {% endfor %}
+          {% endif %}
+          {% endwith %}
+
+          <div class="row">
+            <div class="col-12">
+              {% for comment in event.comments %}
+              <div class="border-bottom comment-border pb-3 mb-3 px-3 py-2 rounded">
+                <b>
+                  <p>
+                    Comment #{{ comment.id }} on FoodieVent.<span class="ms-2 text-muted">Posted at {{
+                      comment.comment_date.strftime('%Y-%m-%d %H:%M') }}</span>
+                  </p>
+                  User — {{ comment.user.first_name }} {{ comment.user.surname }} wrote:
+
+                </b>
+                <p class="comment-body mb-0">{{ comment.contents }}</p>
+              </div>
+              {% endfor %}
+            </div>
+          </div>
+        </div>
       </div>
     </div>
-  </div>
-
-  <hr>
-  <!-- Comment section -->
-  <div class="row mb-4">
-    <div class="col-12 col-sm-12 col-md-6 col-lg-3">
-      {{ render_form(form, action=url_for('events.comment', event_id=event.id), button_map={"submit": "success"}) }}
-    </div>
-  </div>
-
-  <div class="row">
-    <div class="col-12">
-      {% for comment in event.comments %}
-      <div class="border-bottom pb-3 mb-3">
-        <b>
-          User {{ comment.user.first_name }} {{ comment.user.surname }}
-          <span class="ms-2 text-muted">posted at {{ comment.comment_date }}</span>
-        </b>
-        <p class="comment-body mb-0">{{ comment.contents }}</p>
-      </div>
-      {% endfor %}
-    </div>
-  </div>
-</div>
-{% endblock %}
+    {% endblock %}
