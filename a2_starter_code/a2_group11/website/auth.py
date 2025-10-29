@@ -1,6 +1,6 @@
 from flask import Blueprint, flash, render_template, request, url_for, redirect
 from flask_bcrypt import generate_password_hash, check_password_hash
-from flask_login import login_user, login_required, logout_user
+from flask_login import login_user, login_required, logout_user, current_user
 from .models import User
 from .forms import LoginForm, RegisterForm
 from . import db
@@ -62,8 +62,8 @@ def register():
 @auth_bp.route('/logout')
 @login_required
 def logout():
+    name = f"{current_user.first_name} {current_user.surname}"
     logout_user()
     live_status()
-    user = db.session.scalar(db.select(User))
-    flash(f"{user.first_name} {user.surname} has logged out.", 'success')
+    flash(f"{name} has logged out.", 'success')
     return redirect(url_for('main.index'))

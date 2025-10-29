@@ -1,5 +1,5 @@
 # import flask - from 'package' import 'Class'
-from flask import Flask, render_template, request
+from flask import Flask, app, render_template, request
 from flask_bootstrap import Bootstrap5
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
@@ -30,7 +30,7 @@ def create_app():
    login_manager.init_app(app)
 
 # Config upload folder
-   UPLOAD_FOLDER = '/static/image' 
+   UPLOAD_FOLDER = 'static/img'
    app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
    # create a user loader function takes userid and returns User
@@ -60,6 +60,6 @@ def create_app():
    app.register_blueprint(events.event_bp)
 
    from . users import user_bp
-   app.register_blueprint(users.user_bp)
+   app.register_blueprint(user_bp)
    
    return app

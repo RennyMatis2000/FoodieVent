@@ -207,9 +207,8 @@ class VendorNamesStrict:
                 raise ValidationError(
                     "Each vendor name must include at least 4 letters (e.g., 'Alice', 'Bob Jones').")
 
+
 # ---------- File upload helper ----------
-
-
 def check_upload_file(form) -> str:
     """Save uploaded image to ./static/img and return the DB-relative path."""
     fp = form.image.data
@@ -252,9 +251,11 @@ class EventForm(FlaskForm):
 
     total_tickets = IntegerField("Total tickets", validators=[DataRequired()])
     ticket_price = DecimalField("Individual ticket price", places=2, validators=[
-                                InputRequired(), NumberRange(min=0)])
+                                InputRequired(), NumberRange(min=0.01, message="Must be at least $0.01")])
     free_sampling = BooleanField("Free sampling?")
     provide_takeaway = BooleanField("Provide takeaway?")
+    cancel_event = BooleanField("Cancel this event?")
+    reopen_event = BooleanField("Re-open this event?")
     category_type = SelectField("Category", choices=[(
         e.name, e.value) for e in EventCategory], validators=[DataRequired()])
 
@@ -316,7 +317,8 @@ class EventForm(FlaskForm):
 
 class PurchaseTicketForm(FlaskForm):
     tickets_purchased = IntegerField(
-        "How many tickets would you like to purchase?", validators=[DataRequired()])
+        "How many tickets would you like to purchase?", validators=[DataRequired(), NumberRange(min=1, message="Buy at least 1 ticket.")]
+    )
     submit = SubmitField("Confirm Purchase")
 
 

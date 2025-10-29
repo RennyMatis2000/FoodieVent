@@ -30,8 +30,6 @@
       <div id="event-detail-card" class="card my-3">
         <img src="{{ event.image }}" alt="{{ event.title }}" class="card-img-top">
         <div class="card-body event-card">
-
-          <div class="card-body event-card">
             {% set category_badge = {
             'FOOD': 'bg-success',
             'DRINK': 'bg-primary',
@@ -51,7 +49,7 @@
             <span class="badge bg-info mb-3">Start Time: {{ event.start_time.strftime('%Y-%m-%d %H:%M') }}</span>
             <span class="badge bg-info mb-3">End Time: {{ event.end_time.strftime('%Y-%m-%d %H:%M') }}</span>
             <h5 class="mt-2">{{ event.description }}</h5>
-          </div>
+        </div>
 
           {% set can_book = (event.status.name == 'OPEN') %}
           {% set can_update = (current_user.id == event.creator_id) %}
