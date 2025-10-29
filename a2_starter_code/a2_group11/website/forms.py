@@ -168,7 +168,7 @@ class AddressStrict:
         )
         if not pattern.fullmatch(s):
             raise ValidationError(
-                "Enter a street number, name and suffix (e.g., '12 King St', '5/23 O’Connell Rd', '44-46 Main Road')."
+                "Use this format: street number, name and suffix (e.g., 12 King St, 5/23 O’Connell Rd, 44-46 Main Road)."
             )
 
 # ---- NEW: simpler venue validator ----
