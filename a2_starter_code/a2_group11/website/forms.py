@@ -12,10 +12,12 @@ from wtforms.fields import (
     TextAreaField, SubmitField, StringField, TelField, IntegerField, SelectField,
     BooleanField, PasswordField, DateTimeLocalField, DecimalField, HiddenField
 )
+from wtforms.widgets import NumberInput
 from wtforms.validators import DataRequired, InputRequired, Length, Email, EqualTo, NumberRange, ValidationError
 
 from .models import EventCategory, User, Event
 from . import db
+from decimal import Decimal
 
 # ---------- Constants ----------
 ALLOWED_FILE = {'PNG', 'JPG', 'JPEG', 'png', 'jpg', 'jpeg'}
@@ -158,7 +160,7 @@ class AddressStrict:
         s = (field.data or "").strip()
         if len(s) < 8 or len(s) > 120 or not self.pattern.fullmatch(s):
             raise ValidationError(
-                "Use this format: number + street + suffix (e.g.\u00A0 12 King St \u00A0 OR \u00A0 5/23 O’Connell Rd \u00A0 OR \u00A0 44-46 Main Road)")
+                "Use this format: number + street name + suffix (e.g. 12 King St or 44-46 Main Road)")
 
 
 class VenueSimple:
@@ -177,7 +179,7 @@ class VenueSimple:
         parts = [p.strip() for p in raw.split(",")]
         if len(parts) != 2 or not parts[0] or not parts[1]:
             raise ValidationError(
-                "Use format like 'Town Hall, Sydney' or 'Convention Centre, South Brisbane'.")
+                "Use format like Town Hall, Sydney OR Convention Centre, South Brisbane.")
         venue_part, city_part = parts
         if not self.has_letter.search(venue_part):
             raise ValidationError(
@@ -250,8 +252,8 @@ class EventForm(FlaskForm):
     )
 
     total_tickets = IntegerField("Total tickets", validators=[DataRequired()])
-    ticket_price = DecimalField("Individual ticket price", places=2, validators=[
-                                InputRequired(), NumberRange(min=0.01, message="Must be at least $0.01")])
+    ticket_price = DecimalField("Individual ticket price", places=2, widget=NumberInput(),
+                            validators=[InputRequired(), NumberRange(min=Decimal("0.01"), message="Must be at least $0.01")], render_kw={"min": "0.01", "step": "0.01"})
     free_sampling = BooleanField("Free sampling?")
     provide_takeaway = BooleanField("Provide takeaway?")
     cancel_event = BooleanField("Cancel this event?")
