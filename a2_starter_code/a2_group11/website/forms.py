@@ -3,6 +3,8 @@
 from datetime import datetime, timedelta
 import os
 import re
+import unicodedata
+from decimal import Decimal, InvalidOperation
 
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileRequired, FileField, FileAllowed
@@ -17,7 +19,6 @@ from wtforms.validators import DataRequired, InputRequired, Length, Email, Equal
 
 from .models import EventCategory, User, Event
 from . import db
-from decimal import Decimal
 
 # ---------- Constants ----------
 ALLOWED_FILE = {'PNG', 'JPG', 'JPEG', 'png', 'jpg', 'jpeg'}
@@ -31,28 +32,23 @@ COMMON_TLDS = {
 
 # ---------- Filters ----------
 
-
 def _strip(s: str) -> str | None:
     """Trim leading/trailing whitespace; keep internal spaces."""
     return s.strip() if s else s
-
 
 def _collapse_spaces(s: str) -> str | None:
     """Trim then collapse multiple internal spaces to a single space."""
     return re.sub(r"\s+", " ", s.strip()) if s else s
 
-
 def _lower(s: str) -> str | None:
     """Lowercase and trim."""
     return s.lower().strip() if s else s
-
 
 def _digits_only(s: str) -> str:
     """Remove all non-digits (useful for phones)."""
     return re.sub(r"\D", "", s or "")
 
 # ---------- Helpers ----------
-
 
 def _tld_or_sld_ok(addr: str) -> bool:
     """
@@ -69,8 +65,36 @@ def _tld_or_sld_ok(addr: str) -> bool:
     last2 = parts[-2] + "." + parts[-1]  # e.g. "com.au"
     return (last1 in COMMON_TLDS) or (last2 in COMMON_TLDS)
 
-# ---------- Custom validators ----------
+def _title_slug(s: str) -> str:
+    """
+    Normalize titles so 'Test1', 'test 1', 'TEST-1' all compare equal.
+    Lowercase, strip accents, keep only a–z and 0–9.
+    """
+    if not s:
+        return ""
+    s = unicodedata.normalize("NFKD", s).lower()
+    return re.sub(r"[^a-z0-9]+", "", s)
 
+class PriceAtLeast:
+    """
+    Decimal-safe min validator for money values.
+    Avoids float quirks that can trip NumberRange for edge inputs like '0.01'.
+    """
+    def __init__(self, minimum="0.01", message=None):
+        self.minimum = Decimal(str(minimum))
+        self.message = message or f"Must be at least ${self.minimum.quantize(Decimal('0.01'))}"
+
+    def __call__(self, form, field):
+        try:
+            val = field.data
+            if not isinstance(val, Decimal):
+                val = Decimal(str(val))
+        except (InvalidOperation, TypeError):
+            raise ValidationError("Enter a valid price, e.g. 0.01")
+        if val < self.minimum:
+            raise ValidationError(self.message)
+
+# ---------- Custom validators ----------
 
 class NameHuman:
     """
@@ -88,7 +112,6 @@ class NameHuman:
         if not self.pattern.fullmatch(s):
             raise ValidationError(
                 "Letters, spaces, hyphens and apostrophes only (e.g., Boon Leon, O'Connor, Anne-Marie).")
-
 
 class PasswordStrength:
     """
@@ -131,7 +154,6 @@ class PasswordStrength:
                 raise ValidationError(
                     "Password must not contain your name or email.")
 
-
 class AUPhone:
     """AU mobile only: exactly 10 digits after normalization; must start with '04'."""
 
@@ -142,7 +164,6 @@ class AUPhone:
         if not re.fullmatch(r"04\d{8}", digits):
             raise ValidationError(
                 "Mobile numbers must start with 04 and be 10 digits (e.g., 04XXXXXXXX).")
-
 
 class AddressStrict:
     """
@@ -161,7 +182,6 @@ class AddressStrict:
         if len(s) < 8 or len(s) > 120 or not self.pattern.fullmatch(s):
             raise ValidationError(
                 "Use this format: number + street name + suffix (e.g. 12 King St or 44-46 Main Road)")
-
 
 class VenueSimple:
     """
@@ -188,7 +208,6 @@ class VenueSimple:
             raise ValidationError(
                 "End with a suburb/city (letters & spaces only), e.g., 'South Brisbane'.")
 
-
 class VendorNamesStrict:
     """
     One or more vendor names separated by commas or '&'.
@@ -209,7 +228,6 @@ class VendorNamesStrict:
                 raise ValidationError(
                     "Each vendor name must include at least 4 letters (e.g., 'Alice', 'Bob Jones').")
 
-
 # ---------- File upload helper ----------
 def check_upload_file(form) -> str:
     """Save uploaded image to ./static/img and return the DB-relative path."""
@@ -222,7 +240,6 @@ def check_upload_file(form) -> str:
     return db_upload_path
 
 # ---------- Forms ----------
-
 
 class EventForm(FlaskForm):
     """
@@ -251,15 +268,24 @@ class EventForm(FlaskForm):
         filters=[_strip],
     )
 
-    total_tickets = IntegerField("Total tickets", validators=[DataRequired()])
-    ticket_price = DecimalField("Individual ticket price", places=2, widget=NumberInput(),
-                            validators=[InputRequired(), NumberRange(min=Decimal("0.01"), message="Must be at least $0.01")], render_kw={"min": "0.01", "step": "0.01"})
+    total_tickets = IntegerField(
+        "Total tickets",
+        validators=[DataRequired(), NumberRange(min=0, message="Tickets cannot be negative")]
+    )
+    ticket_price = DecimalField(
+        "Individual ticket price",
+        places=2,
+        widget=NumberInput(),
+        validators=[InputRequired(), PriceAtLeast("0.01")],
+        render_kw={"min": "0.01", "step": "0.01"}
+    )
     free_sampling = BooleanField("Free sampling?")
     provide_takeaway = BooleanField("Provide takeaway?")
     cancel_event = BooleanField("Cancel this event?")
     reopen_event = BooleanField("Re-open this event?")
-    category_type = SelectField("Category", choices=[(
-        e.name, e.value) for e in EventCategory], validators=[DataRequired()])
+    category_type = SelectField("Category", choices=[
+        (e.name, e.value) for e in EventCategory
+    ], validators=[DataRequired()])
 
     submit = SubmitField("Create/Update Event")
 
@@ -280,20 +306,33 @@ class EventForm(FlaskForm):
 
     # ---- Field-level validators ----
     def validate_title(self, field):
-        """Case-insensitive uniqueness; exclude self on update."""
-        normalized = (field.data or "").strip()
-        if not normalized:
+        """
+        Uniqueness check that ignores case/spacing/punctuation.
+        Blocks near-duplicates like 'Test1' vs 'test 1'.
+        Excludes the current row when updating.
+        """
+        raw = (field.data or "").strip()
+        if not raw:
             return
-        q = db.select(Event).where(func.lower(
-            Event.title) == normalized.lower())
+
+        wanted = _title_slug(raw)
+
+        events = db.session.scalars(db.select(Event)).all()
+        current_id = None
         if self.event_id.data:
             try:
-                q = q.where(Event.id != int(self.event_id.data))
+                current_id = int(self.event_id.data)
             except ValueError:
                 pass
-        if db.session.scalar(q):
-            raise ValidationError(
-                "An event with this title already exists. Please choose a different title.")
+
+        for ev in events:
+            if current_id and ev.id == current_id:
+                continue
+            if _title_slug(ev.title) == wanted:
+                raise ValidationError(
+                    f"An event with a similar title already exists: “{ev.title}”. "
+                    "Please choose a more distinctive title."
+                )
 
     def validate_start_time(self, field):
         """Start time cannot be in the past."""
@@ -316,13 +355,12 @@ class EventForm(FlaskForm):
                 raise ValidationError(
                     "Event duration must be at least 1 hour.")
 
-
 class PurchaseTicketForm(FlaskForm):
     tickets_purchased = IntegerField(
-        "How many tickets would you like to purchase?", validators=[DataRequired(), NumberRange(min=1, message="Buy at least 1 ticket.")]
+        "How many tickets would you like to purchase?",
+        validators=[DataRequired(), NumberRange(min=1, message="Buy at least 1 ticket.")]
     )
     submit = SubmitField("Confirm Purchase")
-
 
 class LoginForm(FlaskForm):
     email = StringField("Email Address", validators=[InputRequired(), Email(
@@ -330,7 +368,6 @@ class LoginForm(FlaskForm):
     password = PasswordField("Password", validators=[
                              InputRequired("Enter user password")])
     submit = SubmitField("Login")
-
 
 class RegisterForm(FlaskForm):
     # Names now allow spaces/hyphens/apostrophes (no digits). Extra spaces are collapsed.
@@ -389,7 +426,6 @@ class RegisterForm(FlaskForm):
     def validate_phone(self, field):
         if db.session.scalar(db.select(User).where(User.phone == field.data)):
             raise ValidationError("This mobile number is already registered.")
-
 
 class CommentForm(FlaskForm):
     contents = TextAreaField(
