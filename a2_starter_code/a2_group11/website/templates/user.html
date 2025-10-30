@@ -1,35 +1,43 @@
 {% extends "base.html" %}
-<!-- Title -->
+{# Page title goes into base.html's <title> block #}
 {% block title %}FoodieVent Register Page{% endblock %}
+
+{# Helper to render WTForms with Bootstrap markup #}
 {% from "bootstrap5/form.html" import render_form %}
+
 {% block content %}
 
+{# If the user was redirected here while anonymous, show a warning #}
 {% if request.args.get('next') and current_user.is_anonymous %}
 <div class="container-fluid mt-3">
-    <div class="alert alert-warning alert-dismissible fade show" role="alert">
-        Please log-in to book tickets.
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
+  <div class="alert alert-warning alert-dismissible fade show" role="alert">
+    Please log-in to book tickets.
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+  </div>
 </div>
 {% endif %}
 
 <div class="container-flex">
 
-    <div class="page-header">
-        <h1>{{heading}}</h1>
-    </div>
+  <!-- Page heading (e.g., "Register" or "Login") -->
+  <div class="page-header">
+    <h1>{{ heading }}</h1>
+  </div>
 
-    <!-- Form rendering is simple and easy if using WTForms and Bootstrap -->
-    <div class="col-12 col-md-10 col-lg-8 offset-md-2">
-        {{render_form(form, button_map={'submit': 'success'})}}
-    </div>
+  {# Main auth form (register or login), styled via Bootstrap-Flask #}
+  <div class="col-12 col-md-10 col-lg-8 offset-md-2">
+    {{ render_form(form, button_map={'submit': 'success'}) }}
+  </div>
 
-    <!-- When you have Login form, then show the user a link to register -->
-    {% if heading == 'Login' %}
-    <div class="col-12 col-md-10 col-lg-8 offset-md-2 py-1">
-        <p class="register-text">New user? <a href="{{url_for('auth.register')}}">Click here</a> to register.</p>
-    </div>
-</div>
-{% endif %}
+  {# If this is the Login page, offer a link to the Register page #}
+  {% if heading == 'Login' %}
+  <div class="col-12 col-md-10 col-lg-8 offset-md-2 py-1">
+    <p class="register-text">
+      New user? <a href="{{ url_for('auth.register') }}">Click here</a> to register.
+    </p>
+  </div>
+  {% endif %}
+
+</div> {# /.container-flex #}
 
 {% endblock %}

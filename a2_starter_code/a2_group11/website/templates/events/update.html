@@ -1,11 +1,12 @@
 {% extends 'base.html' %}
-<!--This is extending the basic layout already in base.html-->
+{# Use the shared base layout (navbar, footer, etc.) #}
 
 {% from 'bootstrap5/form.html' import render_field %}
-<!--Ensures consistent bootstrap-->
+{# Helper to render WTForms fields with Bootstrap styles #}
+
 {% block content %}
 
-<!-- Event update page container -->
+<!-- Page header (same jumbotron look as create/show pages) -->
 <div class="container-create">
   <div class="p-5 creationjumbotronimage rounded-3">
     <div class="jumbotronback container-fluid py-5">
@@ -20,39 +21,55 @@
   <div class="row mt-5">
     <div class="col-12 col-md-10 col-lg-8 offset-md-2">
 
-      <form id="update-form" method="POST" action="{{ url_for('events.update', event_id=event.id) }}"
-        enctype="multipart/form-data">
+      {# Update form posts to the event.update route for this event #}
+      <form id="update-form"
+            method="POST"
+            action="{{ url_for('events.update', event_id=event.id) }}"
+            enctype="multipart/form-data">
 
-        <!-- Render all fields except cancel/reopen/submit -->
+        {# Only the event creator may edit; non-creators see the warning below #}
         {% if current_user.id == event.creator_id %}
-        {% for field in form if field.name not in ['cancel_event', 'reopen_event', 'submit'] %}
-        {{ render_field(field) }}
-        {% endfor %}
 
-        <!-- Show only one checkbox based on enum status -->
-        <div class="mb-3 mt-3">
-          {% if event.status.name == 'OPEN' %}
-          <p class="warning-text">WARNING: All bookings for this event will be cancelled and refunded if this event is
-            cancelled.
-            You are able to re-open a cancelled event.
-            However, cancellation of bookings and refunding of payments is final and cannot be undone.
-            Please ensure you have considered this decision carefully, as it will impact customers.</p>
-          {{ form.cancel_event }}
-          {{ form.cancel_event.label(class="cancel-event") }}
-          {% elif event.status.name == 'CANCELLED' %}
-          {{ form.reopen_event }}
-          {{ form.reopen_event.label(class="reopen-event") }}
-          {% endif %}
-        </div>
+          {# Render normal input fields; skip action checkboxes and the submit (handled separately) #}
+          {% for field in form if field.name not in ['cancel_event', 'reopen_event', 'submit'] %}
+            {{ render_field(field) }}
+          {% endfor %}
 
-        <button type="button" class="btn btn-success mt-3" data-bs-toggle="modal" data-bs-target="#confirmUpdate">
-          Update Event
-        </button>
+          {# Show exactly one action checkbox depending on current status #}
+          <div class="mb-3 mt-3">
+            {% if event.status.name == 'OPEN' %}
+              <p class="warning-text">
+                WARNING: Cancelling will refund all bookings and return tickets to stock.
+                Refunds are final and cannot be undone. You can re-open later, but refunded payments remain refunded.
+              </p>
+              {{ form.cancel_event }}
+              {{ form.cancel_event.label(class="cancel-event") }}
+
+            {% elif event.status.name == 'CANCELLED' %}
+              {{ form.reopen_event }}
+              {{ form.reopen_event.label(class="reopen-event") }}
+            {% endif %}
+          </div>
+
+          {# Open confirm modal instead of submitting immediately #}
+          <button type="button"
+                  class="btn btn-success mt-3"
+                  data-bs-toggle="modal"
+                  data-bs-target="#confirmUpdate">
+            Update Event
+          </button>
+
       </form>
+
       {% else %}
-        <p class="warning-text">If you are seeing this text, you are clever. However, you shouldn't be here. Don't break FoodieVent's security.</p>
+        {# Fallback message when a non-creator reaches this page #}
+        <p class="warning-text">
+          If you are seeing this text, you are clever. However, you shouldn't be here.
+          Don't break FoodieVent's security.
+        </p>
       {% endif %}
 
+      {# Confirmation modal; the green button submits the form above by id #}
       <div class="modal fade" id="confirmUpdate" tabindex="-1" aria-labelledby="confirmUpdateLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
           <div class="modal-content">
@@ -62,19 +79,19 @@
             </div>
 
             <div class="modal-body warning-text">
-              Changes to this event will be enacted immediately. Please carefully consider your changes before
-              confirming your submission.
+              Changes to this event will be enacted immediately. Please review before confirming.
             </div>
 
             <div class="modal-footer">
               <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancel</button>
-              <!-- This submits the page form -->
+              {# Submits the update form above via its id #}
               <button type="submit" class="btn btn-success" form="update-form">Update changes</button>
             </div>
           </div>
         </div>
       </div>
-    </div>
-  </div>
-</div>
+
+    </div> 
+  </div>   
+</div>    
 {% endblock %}
