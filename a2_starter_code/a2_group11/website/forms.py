@@ -1,14 +1,15 @@
-# forms.py
-
+# Import datetimes and modules required for filters, helper methods and validation rules
 from datetime import datetime, timedelta
 import os
 import re
 import unicodedata
 from decimal import Decimal, InvalidOperation
 
+# Import flask and associated modules
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileRequired, FileField, FileAllowed
-from sqlalchemy import func
+
+# Import werkzeug and wtforms and associated modules
 from werkzeug.utils import secure_filename
 from wtforms.fields import (
     TextAreaField, SubmitField, StringField, TelField, IntegerField, SelectField,
@@ -17,10 +18,11 @@ from wtforms.fields import (
 from wtforms.widgets import NumberInput
 from wtforms.validators import DataRequired, InputRequired, Length, Email, EqualTo, NumberRange, ValidationError
 
+# Import modules from other codes in the code package 
 from .models import EventCategory, User, Event
 from . import db
 
-# ---------- Constants ----------
+# Declare variables for an allowed file in file upload form fields
 ALLOWED_FILE = {'PNG', 'JPG', 'JPEG', 'png', 'jpg', 'jpeg'}
 
 # common domain endings for simple email-typo guard
@@ -30,26 +32,36 @@ COMMON_TLDS = {
     "com.au", "net.au", "org.au", "edu.au", "gov.au",
 }
 
-# ---------- Filters ----------
+# Helper methods for data validation
+
+# Strips strings to remove whitespace
 
 def _strip(s: str) -> str | None:
     """Trim leading/trailing whitespace; keep internal spaces."""
     return s.strip() if s else s
 
+# Strips multiple spaces into one space
 def _collapse_spaces(s: str) -> str | None:
     """Trim then collapse multiple internal spaces to a single space."""
     return re.sub(r"\s+", " ", s.strip()) if s else s
 
+# Strips lowercase and trims
 def _lower(s: str) -> str | None:
     """Lowercase and trim."""
     return s.lower().strip() if s else s
 
+# Ensures digits only
 def _digits_only(s: str) -> str:
     """Remove all non-digits (useful for phones)."""
     return re.sub(r"\D", "", s or "")
 
-# ---------- Helpers ----------
+# Strip comment method ensures the comment cannot be blank  
+def strip_comment(value):
+    return value.strip() if isinstance(value, str) else value
 
+# Helper methods
+
+# Method that enforces users must enter a valid domain for an email
 def _tld_or_sld_ok(addr: str) -> bool:
     """
     Allow only common domain endings to catch obvious typos like '.coddddd'.
@@ -65,6 +77,7 @@ def _tld_or_sld_ok(addr: str) -> bool:
     last2 = parts[-2] + "." + parts[-1]  # e.g. "com.au"
     return (last1 in COMMON_TLDS) or (last2 in COMMON_TLDS)
 
+# Normalizes unicode data regardless of spaces, punctuation and cases
 def _title_slug(s: str) -> str:
     """
     Normalize titles so 'Test1', 'test 1', 'TEST-1' all compare equal.
@@ -75,26 +88,9 @@ def _title_slug(s: str) -> str:
     s = unicodedata.normalize("NFKD", s).lower()
     return re.sub(r"[^a-z0-9]+", "", s)
 
-class PriceAtLeast:
-    """
-    Decimal-safe min validator for money values.
-    Avoids float quirks that can trip NumberRange for edge inputs like '0.01'.
-    """
-    def __init__(self, minimum="0.01", message=None):
-        self.minimum = Decimal(str(minimum))
-        self.message = message or f"Must be at least ${self.minimum.quantize(Decimal('0.01'))}"
+# Custom validation rules
 
-    def __call__(self, form, field):
-        try:
-            val = field.data
-            if not isinstance(val, Decimal):
-                val = Decimal(str(val))
-        except (InvalidOperation, TypeError):
-            raise ValidationError("Enter a valid price, e.g. 0.01")
-        if val < self.minimum:
-            raise ValidationError(self.message)
-
-# ---------- Custom validators ----------
+# Custom validation rule class to ensure a human name can have spaces or hyphens, but no digits and must start and end with a letter
 
 class NameHuman:
     """
@@ -103,8 +99,10 @@ class NameHuman:
     - No digits allowed
     - Must start and end with a letter
     """
+    # Pattern is generated using regex
     pattern = re.compile(r"^[A-Za-z](?:[A-Za-z\s'\-]*[A-Za-z])?$")
 
+    # Call the method to validate
     def __call__(self, form, field):
         s = (field.data or "").strip()
         if not s:
@@ -113,6 +111,7 @@ class NameHuman:
             raise ValidationError(
                 "Letters, spaces, hyphens and apostrophes only (e.g., Boon Leon, O'Connor, Anne-Marie).")
 
+# Custom validator using a class to ensure password strength
 class PasswordStrength:
     """
     Require: length >= min_length and at least 3 of 4 classes
@@ -120,25 +119,30 @@ class PasswordStrength:
     first name, surname, or email local-part inside the password.
     """
 
+    # Initialise the password
     def __init__(self, min_length: int = 8):
         self.min_length = min_length
 
+    # Call the password
     def __call__(self, form, field):
         pwd = field.data or ""
         if len(pwd) < self.min_length:
             raise ValidationError(
                 f"Password must be at least {self.min_length} characters long.")
 
+        # Regex to ensure validation of password using lowercase, uppercase, and symbol/punctuation
         classes = sum((
             bool(re.search(r"[a-z]", pwd)),
             bool(re.search(r"[A-Z]", pwd)),
             bool(re.search(r"\d",    pwd)),
             bool(re.search(r"[^\w\s]", pwd)),  # symbol/punctuation
         ))
+        # Must ensure 3 of these conditions are met
         if classes < 3:
             raise ValidationError(
                 "Use at least three of: lowercase, uppercase, digit, symbol.")
 
+        # Validate whether the user has entered an incorrect first name, surname, or email
         blocked = [
             (getattr(form, "first_name", None).data or "") if hasattr(
                 form, "first_name") else "",
@@ -147,6 +151,8 @@ class PasswordStrength:
             ((getattr(form, "email",     None).data or "").split(
                 "@")[0]) if hasattr(form, "email") else "",
         ]
+        
+        # Restrict name or email being used in the password to ensure a higher strength, raise restriction error message
         low = pwd.lower()
         for token in blocked:
             t = (token or "").lower().strip()
@@ -154,9 +160,11 @@ class PasswordStrength:
                 raise ValidationError(
                     "Password must not contain your name or email.")
 
+# Custom validation class for Australian phone numbers must start with 04 and be a valid 10 digit phone number
 class AUPhone:
     """AU mobile only: exactly 10 digits after normalization; must start with '04'."""
 
+    # Call the restriction, raise mobile error message if incorrect input
     def __call__(self, form, field):
         digits = _digits_only(field.data)
         if len(digits) != 10:
@@ -165,11 +173,13 @@ class AUPhone:
             raise ValidationError(
                 "Mobile numbers must start with 04 and be 10 digits (e.g., 04XXXXXXXX).")
 
+# Custom validation class for a valid Australian address
 class AddressStrict:
     """
     Plausible AU street address, e.g. '12 King St', '5/23 O’Connell Rd', '44-46 Main Road'.
     Requires number + street name + common suffix.
     """
+    # Regex pattern to detect a valid Australian address
     pattern = re.compile(
         r"^(?:\d{1,4}(?:-\d{1,4})?/)?\d{1,5}\s+"
         r"[A-Za-z][A-Za-z\s'.\-]{2,}"
@@ -177,12 +187,14 @@ class AddressStrict:
         re.IGNORECASE
     )
 
+    # Call the restriction on address, raise the address error message if incorrect input
     def __call__(self, form, field):
         s = (field.data or "").strip()
         if len(s) < 8 or len(s) > 120 or not self.pattern.fullmatch(s):
             raise ValidationError(
                 "Use this format: number + street name + suffix (e.g. 12 King St or 44-46 Main Road)")
 
+# Custom validation rule class on venue names 
 class VenueSimple:
     """
     Venue format: '<Venue name>, <City/Suburb>'
@@ -190,10 +202,12 @@ class VenueSimple:
     - First part must include letters (rejects purely numeric).
     - Second part must look like a city/suburb: letters and spaces only.
     """
+    # Write regex required for the venue
     has_letter = re.compile(r"[A-Za-z]")
     # e.g., 'Sydney', 'South Brisbane'
     city_re = re.compile(r"^[A-Za-z]+(?:\s+[A-Za-z]+){0,5}$")
 
+    # Call the validation on ensuring a valid venue input, otherwise raise error message based on what was incorrect
     def __call__(self, form, field):
         raw = (field.data or "").strip()
         parts = [p.strip() for p in raw.split(",")]
@@ -208,6 +222,7 @@ class VenueSimple:
             raise ValidationError(
                 "End with a suburb/city (letters & spaces only), e.g., 'South Brisbane'.")
 
+# Custom validation rule class on vendor names
 class VendorNamesStrict:
     """
     One or more vendor names separated by commas or '&'.
@@ -215,8 +230,11 @@ class VendorNamesStrict:
     - No digits allowed anywhere.
     - Each vendor must contain at least 4 letters in total.
     """
+
+    # Regex to ensure no digits on the vendor names (most food and drink festival vendors do not include digits in their names)
     overall = re.compile(r"^[A-Za-z\s,&'\-]+$")  # no digits
 
+    # Call the vendor validation, raise error messages if user has not input a valid vendor name
     def __call__(self, form, field):
         s = (field.data or "").strip()
         if not self.overall.fullmatch(s):
@@ -228,7 +246,7 @@ class VendorNamesStrict:
                 raise ValidationError(
                     "Each vendor name must include at least 4 letters (e.g., 'Alice', 'Bob Jones').")
 
-# ---------- File upload helper ----------
+# Function to allow file uploads (particularly images for the event)
 def check_upload_file(form) -> str:
     """Save uploaded image to ./static/img and return the DB-relative path."""
     fp = form.image.data
@@ -239,15 +257,21 @@ def check_upload_file(form) -> str:
     fp.save(upload_path)
     return db_upload_path
 
-# ---------- Forms ----------
+# All FlaskForms below
 
+# Event form, used to create and update an event
 class EventForm(FlaskForm):
     """
     Create/Update event form.
     - On create: image is required.
     - On update: image optional (keeps existing if not provided).
     """
+
+    # Fields required for an event (event_id is generated upon creation of the event)
+
     event_id = HiddenField()  # used by duplicate-title check to exclude current row
+
+    # Fields required to be input by the user (title, description, image, start_time, end_time, venue, vendor_names, total_tickets, ticket_price, free_sampling, provide_takeaway)
 
     title = StringField("Enter Title of this event", validators=[
                         InputRequired()], filters=[_strip])
@@ -275,19 +299,27 @@ class EventForm(FlaskForm):
     ticket_price = DecimalField(
         "Individual ticket price",
         places=2,
-        widget=NumberInput(),
-        validators=[InputRequired(), PriceAtLeast("0.01")],
-        render_kw={"min": "0.01", "step": "0.01"}
+        widget=NumberInput(step="0.01"),
+        validators=[InputRequired(), NumberRange(min=0)],
     )
     free_sampling = BooleanField("Free sampling?")
     provide_takeaway = BooleanField("Provide takeaway?")
+
+    # Forms to allow the user to tick whether they want to cancel or re-open the event based on the events status
     cancel_event = BooleanField("Cancel this event?")
     reopen_event = BooleanField("Re-open this event?")
+
+    # Type of category the event is based on the ENUM category types (FOOD, DRINK, CULTURAL, DIETARY)
+
     category_type = SelectField("Category", choices=[
         (e.name, e.value) for e in EventCategory
     ], validators=[DataRequired()])
 
+    # Submit field to create or update the event, commonly used in the HTML as a button
+
     submit = SubmitField("Create/Update Event")
+
+    # Toggle the image requirements based on whether it is create or update, as update image does not require a new image. On event creation an image is required.
 
     def __init__(self, *args, require_image: bool = True, **kwargs):
         """
@@ -300,40 +332,49 @@ class EventForm(FlaskForm):
             ALLOWED_FILE, message="Only supports png, jpg, JPG, PNG")
         if require_image:
             self.image.validators = [FileRequired(
-                message="Please upload a Destination Image"), allowed]
+                message="Please upload an Event Image"), allowed]
         else:
             self.image.validators = [allowed]
 
-    # ---- Field-level validators ----
+    # Field-level validators, validate the title of the event and ensure events cannot be created that are the exact same
     def validate_title(self, field):
         """
         Uniqueness check that ignores case/spacing/punctuation.
         Blocks near-duplicates like 'Test1' vs 'test 1'.
         Excludes the current row when updating.
         """
+
+        # Raw input text
         raw = (field.data or "").strip()
         if not raw:
             return
 
+        # Save the wanted title of the raw input text
         wanted = _title_slug(raw)
 
+        # Select all events
         events = db.session.scalars(db.select(Event)).all()
         current_id = None
+        # Check if the event_id of similar events is the same as the current one trying to be created
         if self.event_id.data:
             try:
                 current_id = int(self.event_id.data)
             except ValueError:
                 pass
 
-        for ev in events:
-            if current_id and ev.id == current_id:
+        # Select and loop through all events
+        for event in events:
+            # If the event is the current event
+            if current_id and event.id == current_id:
                 continue
-            if _title_slug(ev.title) == wanted:
+            # If event title wanted does not pass the validation checks, raise an error message that the event title is the same
+            if _title_slug(event.title) == wanted:
                 raise ValidationError(
-                    f"An event with a similar title already exists: “{ev.title}”. "
+                    f"An event with a similar title already exists: “{event.title}”. "
                     "Please choose a more distinctive title."
                 )
 
+    # Ensure start time is in the future
     def validate_start_time(self, field):
         """Start time cannot be in the past."""
         start = field.data
@@ -341,6 +382,7 @@ class EventForm(FlaskForm):
         if start and start <= now:
             raise ValidationError("Start time cannot be in the past.")
 
+    # Ensure end time is in the future and must be 1 hour after the start time
     def validate_end_time(self, field):
         """End must be after start, at least 1 hour long, and not in the past."""
         start = self.start_time.data
@@ -355,13 +397,16 @@ class EventForm(FlaskForm):
                 raise ValidationError(
                     "Event duration must be at least 1 hour.")
 
+# Purchase ticket form, used when a user is booking an order
 class PurchaseTicketForm(FlaskForm):
+    # Fields required to be completed by the form
     tickets_purchased = IntegerField(
         "How many tickets would you like to purchase?",
         validators=[DataRequired(), NumberRange(min=1, message="Buy at least 1 ticket.")]
     )
     submit = SubmitField("Confirm Purchase")
 
+# Login form that takes an email and password
 class LoginForm(FlaskForm):
     email = StringField("Email Address", validators=[InputRequired(), Email(
         "Please enter a valid email")], filters=[_lower])
@@ -369,6 +414,7 @@ class LoginForm(FlaskForm):
                              InputRequired("Enter user password")])
     submit = SubmitField("Login")
 
+# Register form that has fields required for a user to register (first_name, surname, email, phone, address, password)
 class RegisterForm(FlaskForm):
     # Names now allow spaces/hyphens/apostrophes (no digits). Extra spaces are collapsed.
     first_name = StringField(
@@ -410,6 +456,9 @@ class RegisterForm(FlaskForm):
             EqualTo("confirm", message="Passwords should match"),
         ],
     )
+
+    # Re-enter password and submit
+
     confirm = PasswordField("Confirm Password")
 
     submit = SubmitField("Register")
@@ -427,7 +476,14 @@ class RegisterForm(FlaskForm):
         if db.session.scalar(db.select(User).where(User.phone == field.data)):
             raise ValidationError("This mobile number is already registered.")
 
+# Comment form for when a user wants to enter a comment on an event page
 class CommentForm(FlaskForm):
+    # Contents is what the user is writing for the comment
     contents = TextAreaField(
-        "Want to share your thoughts? Post a comment below.", validators=[InputRequired()])
+        "Want to share your thoughts? Post a comment below.",
+        # Comment is only valid if it is not empty (spaces or new lines), and contains substance
+        filters=[strip_comment],
+        # Maximum of 1000 characters
+        validators=[DataRequired(message="Please enter a comment."), Length(max=1000)]
+    )
     submit = SubmitField("Post Comment")

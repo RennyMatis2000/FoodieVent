@@ -104,7 +104,7 @@
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No, keep booking</button>
-            <a href="{{ url_for('events.cancel_order', order_id=order.id) }}" class="btn btn-danger">
+            <a href="{{ url_for('orders.cancel_order', order_id=order.id) }}" class="btn btn-danger">
               Yes, cancel booking
             </a>
           </div>
