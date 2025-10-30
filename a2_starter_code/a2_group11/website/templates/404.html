@@ -14,8 +14,9 @@
     <h1 class="fw-bold">Error 404!</h1>
     <p>Something went wrong! More info:</p>
     <p>{{error}}</p>
-    <p class="mt-3 fs-6 text secondary">404 Not Found: The url entered cannot be located.
-    </p>
+    
+    <a href="{{ url_for('main.index') }}" class="btn btn-success mt-3 px-4 py-2">Return Home</a>
+                        
 </div>
 
 {% endblock %}
