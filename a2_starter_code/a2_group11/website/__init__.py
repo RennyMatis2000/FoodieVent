@@ -40,11 +40,13 @@ def create_app():
     @login_manager.user_loader 
     def load_user(user_id): 
         db.session.scalar(db.select(User).where(User.id==user_id))
+
+    # Inbuilt function for handling 404 errors
+    @app.errorhandler(404)
+    def page_not_found(e):
+        # Error is displayed as error message on 404.html
+        return render_template('404.html', error=e), 404
         
-    @app.errorhandler(500)
-    def internal_server_error(e):
-    # note that we set the 500 status explicitly
-        return render_template('500.html'), 500
 
     # Inbuilt function for handling 500 errors
     # Error 500 will not handle if a user is logged in as the database is deleted
@@ -54,7 +56,8 @@ def create_app():
     def server_error(e):
     # Rollback the database for database safety in the event of a 500 error
         db.session.rollback()
-        return render_template("500.html", error=e)
+        # Error is displayed as error message on 500.html
+        return render_template("500.html", error=e), 500
 
     # Import main blueprints, handling the main views of the website
     from . import views
