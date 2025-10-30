@@ -356,3 +356,102 @@ footer {
 .class-group {
   background-color: #caf0c5
 }
+
+
+/* Card base + motion */
+.card.hover-lift {
+  transition: transform .28s cubic-bezier(.22,.61,.36,1), box-shadow .28s ease, outline-color .28s ease;
+  will-change: transform, box-shadow;
+  border-radius: .75rem;
+  overflow: hidden;
+  position: relative;
+}
+
+/* Lift + soft ring */
+.card.hover-lift:hover {
+  transform: translateY(-7px);
+  box-shadow: 0 16px 30px rgba(0,0,0,.16), 0 8px 16px rgba(0,0,0,.08);
+  outline: 2px solid rgba(25,135,84,.28);
+  outline-offset: 0;
+}
+
+/* Keyboard focus ring */
+.card.hover-lift:focus-visible {
+  outline: 2px solid rgba(25,135,84,.45);
+  outline-offset: 0;
+}
+
+/* Image zoom + gentle pop */
+.card.hover-lift .card-img-top {
+  transition: transform .45s cubic-bezier(.22,.61,.36,1), filter .25s ease;
+  will-change: transform, filter;
+  transform-origin: center 35%;
+}
+.card.hover-lift:hover .card-img-top {
+  transform: scale(1.075) translateY(-1px);
+  filter: contrast(1.04) saturate(1.07);
+}
+
+/* Top gradient depth (slightly lighter) */
+.card.hover-lift::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: transparent;
+  pointer-events: none;
+  transition: background .25s ease;
+}
+.card.hover-lift:hover::after {
+  background: linear-gradient(to bottom, rgba(0,0,0,.08), rgba(0,0,0,0) 40%);
+}
+
+/* Shiny sweep (narrower band + softer core) */
+.card.hover-lift::before {
+  content: "";
+  position: absolute;
+  inset: -24%;
+  background:
+    linear-gradient(120deg,
+      transparent 46%,
+      rgba(255,255,255,.26) 50%,   /* softer core */
+      transparent 54%
+    ),
+    radial-gradient(40% 80% at 50% 50%, rgba(255,255,255,.18), transparent 60%);
+  transform: translateX(-130%) skewX(-8deg);
+  mix-blend-mode: screen;
+  filter: drop-shadow(0 0 10px rgba(255,255,255,.25));
+  opacity: .70;                              /* base sheen strength */
+  transition: transform .7s ease, opacity .25s ease;
+  pointer-events: none;
+}
+.card.hover-lift:hover::before {
+  transform: translateX(130%) skewX(-8deg);
+  opacity: .88;                              /* toned-down hover */
+}
+
+/* Ripple container */
+.ripple { position: relative; overflow: hidden; }
+
+/* Ripple pulse */
+.ripple:after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at var(--x,50%) var(--y,50%), rgba(25,135,84,.15), transparent 42%);
+  opacity: 0;
+  transition: opacity .6s ease;
+  pointer-events: none;
+}
+.ripple:active:after {
+  opacity: 1;
+  transition: opacity .15s ease;
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .card.hover-lift,
+  .card.hover-lift .card-img-top {
+    transition: none !important;
+  }
+}
+

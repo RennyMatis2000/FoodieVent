@@ -125,7 +125,7 @@
   <div class="row">
     {% for event in events %}
     <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-2">
-      <div class="card w-100 h-300">
+      <div class="card hover-lift ripple w-100 h-300" tabindex="0">
         <img class="card-img-top" src="{{ event.image }}" alt="event picture">
         <div class="card-body">
           <h5 class="card-title">{{ event.title }}</h5>
@@ -136,7 +136,7 @@
             'CULTURAL': 'bg-warning',
             'DIETARY': 'bg-danger'
             }[event.category_type.name] %}
-            <span class="badge {{ category_badge }}">Event Category: {{ event.category_type.name }}</span>
+            <span class="badge {{ category_badge }} ">Event Category: {{ event.category_type.name }}</span>
             {% set status_badge = {
             'OPEN': 'bg-success',
             'INACTIVE': 'bg-secondary',
@@ -144,9 +144,9 @@
             'CANCELLED': 'bg-danger'
             }[event.status.name] %}
             <span class="badge {{ status_badge }}">Event Status: {{ event.status.name }}</span>
-            <span class="badge bg-info">Tickets Remaining: {{ event.total_tickets }}</span>
-            <span class="badge bg-info">Start Time: {{ event.start_time.strftime('%Y-%m-%d %H:%M') }}</span>
-            <span class="badge bg-info">End Time: {{ event.end_time.strftime('%Y-%m-%d %H:%M') }}</span>
+            <span class="badge bg-info"><span class="chip-emoji" aria-hidden="true">🎟️</span> Tickets Remaining: {{ event.total_tickets }}</span>
+            <span class="badge bg-info"><span class="chip-emoji" aria-hidden="true">🕒</span> Start Time: {{ event.start_time.strftime('%Y-%m-%d %H:%M') }}</span>
+            <span class="badge bg-info"><span class="chip-emoji" aria-hidden="true">🕒</span> End Time: {{ event.end_time.strftime('%Y-%m-%d %H:%M') }}</span>
           </div>
           <hr>
           <p class="card-text clamp-5">{{ event.description }}</p>
