@@ -300,7 +300,7 @@ class EventForm(FlaskForm):
             ALLOWED_FILE, message="Only supports png, jpg, JPG, PNG")
         if require_image:
             self.image.validators = [FileRequired(
-                message="Please upload a Destination Image"), allowed]
+                message="Please upload an Event Image"), allowed]
         else:
             self.image.validators = [allowed]
 

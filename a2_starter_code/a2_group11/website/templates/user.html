@@ -4,6 +4,15 @@
 {% from "bootstrap5/form.html" import render_form %}
 {% block content %}
 
+{% if request.args.get('next') and current_user.is_anonymous %}
+<div class="container-fluid mt-3">
+    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+        Please log-in to book tickets.
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+</div>
+{% endif %}
+
 <div class="container-flex">
 
     <div class="page-header">

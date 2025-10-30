@@ -23,7 +23,7 @@ body {
   font-family: 'Merriweather';
 
   /* make the hero tall */
-  min-height: 72vh;
+  min-height: 40vh;
   display: flex;
   align-items: center;
   position: relative;
@@ -50,7 +50,7 @@ body {
 
 /* a little taller on large screens */
 @media (min-width: 992px) {
-  .homejumbotronimage { min-height: 90vh; }
+  .homejumbotronimage { min-height: 40vh; }
 }
 
 /* hero carousel chevrons */
