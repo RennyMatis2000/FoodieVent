@@ -45,10 +45,10 @@ def create_app():
    def not_found(e): 
       return render_template("404.html", error=e)
    
+    # Inbuilt function for handling 500 errors
    @app.errorhandler(500)
-   def server_error(e):
-    db.session.rollback()
-    return render_template("500.html", error=e)
+   def internal_server_error(e):
+      return render_template('500.html', error=e), 500
 
    from . import views
    app.register_blueprint(views.main_bp)

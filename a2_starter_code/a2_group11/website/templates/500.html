@@ -2,19 +2,18 @@
 
 {% block content %}
 
-<div class="container-error mt-5">
-    <div class="row">
-         <div class="col-8">
+<div class="container-error d-flex flex-column justify-content-center align-items-center text-center"
+    style="min-height: 80vh";>
             <img
             src="{{ url_for('static', filename='img/500_Error.gif')}}"
             alt="Lego 500 Error"
             class="img-fluid mb-4"
             style="max-width: 380px;">
-            <h1>Error 500</h1>
+
+            <h1 class="fw-bold">Error 500!</h1>
             <p>Something went wrong! More info:</p>
             <p>{{error}}</p>
-        </div>
-    </div>
+        
 </div>
 
 {% endblock %}
