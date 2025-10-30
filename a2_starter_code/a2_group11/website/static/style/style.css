@@ -15,16 +15,74 @@ body {
 
 /* home page jumbotron css */
 .homejumbotronimage {
-  background: url("../img/HomePageJumbo.jpg") center center;
+  background-position: center;
   background-size: cover;
+  background-repeat: no-repeat;
+
   color: #ffffff;
   font-family: 'Merriweather';
-  /* black outline on white font for maximum readability over multiple colours */
+
+  /* make the hero tall */
+  min-height: 72vh;
+  display: flex;
+  align-items: center;
+  position: relative;
+
+  /* readable text over images */
   text-shadow:
     -1px -1px 0 #000,
-    1px -1px 0 #000,
-    -1px 1px 0 #000,
-    1px 1px 0 #000;
+     1px -1px 0 #000,
+    -1px  1px 0 #000,
+     1px  1px 0 #000;
+}
+
+/* optional: a soft dark overlay for readability */
+.homejumbotronimage::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,.25);
+}
+.homejumbotronimage > .container-fluid {
+  position: relative; /* sit above the overlay */
+  z-index: 1;
+}
+
+/* a little taller on large screens */
+@media (min-width: 992px) {
+  .homejumbotronimage { min-height: 90vh; }
+}
+
+/* hero carousel chevrons */
+#heroCarousel .carousel-control-prev,
+#heroCarousel .carousel-control-next {
+  width: 4rem;
+  z-index: 3;
+  background: transparent !important;
+}
+
+#heroCarousel .carousel-control-prev-icon,
+#heroCarousel .carousel-control-next-icon {
+  width: 2.4rem;
+  height: 2.4rem;
+  opacity: .50;                              
+  filter: drop-shadow(0 0 6px rgba(0,0,0,.55));
+  transition: opacity .2s ease, transform .2s ease, filter .2s ease;
+}
+
+#heroCarousel .carousel-control-prev:hover .carousel-control-prev-icon,
+#heroCarousel .carousel-control-next:hover .carousel-control-next-icon,
+#heroCarousel .carousel-control-prev:focus .carousel-control-prev-icon,
+#heroCarousel .carousel-control-next:focus .carousel-control-next-icon {
+  opacity: .9;                           
+  filter: drop-shadow(0 0 10px rgba(0,0,0,.85));
+  transform: scale(1.02);
+}
+
+/* make hero carousel controls pop a bit */
+#heroCarousel .carousel-control-prev-icon,
+#heroCarousel .carousel-control-next-icon {
+  filter: drop-shadow(0 0 6px rgba(0,0,0,.6));
 }
 
 #event-detail-card .card-img-top {

@@ -32,7 +32,16 @@
             <!-- Navbar -->
             <nav class="navbar navbar-expand-lg navbar-light">
                 <div class="container-fluid">
-                    <a class="navbar-brand" href="{{ url_for('main.index') }}">FoodieVent</a>
+                    <a class="navbar-brand d-flex align-items-center gap-2" href="{{ url_for('main.index') }}">
+                        <img
+                            src="{{ url_for('static', filename='img/FoodieVentLogo.png') }}"
+                            alt="FoodieVent logo"
+                            class="brand-logo"
+                            width="34" height="34"
+                            loading="eager"
+                        />
+                        <span>FoodieVent</span>
+                    </a>
                     <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                         data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
@@ -82,15 +91,16 @@
                 </div>
             </nav>
             <!-- Code for using Flask flash -->
-             <div class="container-fluid mt-2">
-                {% with flashes = get_flashed_messages(with_categories=true, category_filter=['success','info','warning','danger']) %}
-                {% if flashes %}
+            {% with flashes = get_flashed_messages(with_categories=true, category_filter=['success','info','warning','danger']) %}
+            {% if flashes %}
+            <div class="container-fluid py-2">
                 {% for category, message in flashes %}
-                <div class="alert alert-{{ 'warning' if not category else category }} alert-dismissible fade show" role="alert">
+                <div class="alert alert-{{ 'warning' if not category else category }} alert-dismissible fade show mb-0" role="alert">
                     {{ message }}
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
                 {% endfor %}
+            </div>
             {% endif %}
             {% endwith %}
             </div>            

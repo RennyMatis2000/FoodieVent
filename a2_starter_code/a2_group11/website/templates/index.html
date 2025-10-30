@@ -1,67 +1,82 @@
-<!-- Extension inherits from base.html file -->
 {% extends "base.html" %}
-
-<!-- Title -->
 {% block title %}FoodieVent Home Page{% endblock %}
 
 {% block header %}
-<!-- Homepage Jumbotron -->
-<div class="p-5 mb-1 homejumbotronimage rounded-3">
-  <div class="container-fluid py-5">
-    <h1 class="display-5 fw-bold">FoodieVent</h1>
+<!-- Hero with background carousel -->
+<div id="heroCarousel" class="carousel slide mb-1 overflow-hidden" data-bs-ride="carousel" data-bs-interval="5000">
+  <div class="carousel-inner">
 
-    {% if current_user.is_authenticated %}
-    <p class="col-md-8 fs-4">
-      Welcome back, {{ current_user.first_name }} {{ current_user.surname }}.
-      Browse your booking history for upcoming Food and Drink events, or spread the fun by hosting a Food and Drink
-      event.
-    </p>
-    <a href="{{ url_for('users.display_booking_history') }}" class="btn btn-success btn-lg">Booking History</a>
-    <a href="{{ url_for('events.create') }}" class="btn btn-success btn-lg">Create Event</a>
-    {% else %}
-    <p class="col-md-8 fs-4">
-      FoodieVent is a Food and Drinks Festival Event Manager.
-      Feel free to browse, or join in on the fun by participating.
-    </p>
-    <a href="{{ url_for('auth.register') }}" class="btn btn-success btn-lg">Register Now</a>
-    <a href="{{ url_for('auth.login') }}" class="btn btn-success btn-lg">Login</a>
-    {% endif %}
-  </div>
-</div>
-<!-- Header ends -->
-{% endblock %}
-
-{% block content %}
-
-<!-- Flex container begins -->
-<div class="container-flex">
-
-  <!-- First row below header-->
-  <div class="row">
-    <!-- Carousel with backwards and forwards buttons -->
-    <div id="homeCarousel" class="carousel slide" data-bs-ride="carousel">
-      <div class="carousel-inner">
-        <div class="carousel-item active">
-          <img src="static/img/Festival.jpg" class="d-block" alt="Festival">
-        </div>
-        <div class="carousel-item">
-          <img src="static/img/Friends.jpg" class="d-block" alt="Friends">
-        </div>
-        <div class="carousel-item">
-          <img src="static/img/Food.jpg" class="d-block" alt="Foods">
+    <div class="carousel-item active">
+      <div class="p-5 homejumbotronimage" style="background-image:url('static/img/Festival.jpg'); background-position:center; background-size:cover;">
+        <div class="container-fluid py-5">
+          <h1 class="display-5 fw-bold">FoodieVent</h1>
+          {% if current_user.is_authenticated %}
+          <p class="col-md-8 fs-4">
+            Welcome back, {{ current_user.first_name }} {{ current_user.surname }}.
+            Browse your booking history for upcoming Food and Drink events, or spread the fun by hosting a Food and Drink event.
+          </p>
+          <a href="{{ url_for('users.display_booking_history') }}" class="btn btn-success btn-lg">Booking History</a>
+          <a href="{{ url_for('events.create') }}" class="btn btn-success btn-lg">Create Event</a>
+          {% else %}
+          <p class="col-md-8 fs-4">FoodieVent is a Food and Drinks Festival Event Manager. Feel free to browse, or join in on the fun by participating.</p>
+          <a href="{{ url_for('auth.register') }}" class="btn btn-success btn-lg">Register Now</a>
+          <a href="{{ url_for('auth.login') }}" class="btn btn-success btn-lg">Login</a>
+          {% endif %}
         </div>
       </div>
-      <button class="carousel-control-prev" type="button" data-bs-target="#homeCarousel" data-bs-slide="prev">
-        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-        <span class="visually-hidden">Previous</span>
-      </button>
-      <button class="carousel-control-next" type="button" data-bs-target="#homeCarousel" data-bs-slide="next">
-        <span class="carousel-control-next-icon" aria-hidden="true"></span>
-        <span class="visually-hidden">Next</span>
-      </button>
     </div>
+
+    <div class="carousel-item">
+      <div class="p-5 homejumbotronimage" style="background-image:url('static/img/Friends.jpg'); background-position:center; background-size:cover;">
+        <div class="container-fluid py-5">
+          <h1 class="display-5 fw-bold">FoodieVent</h1>
+          {% if current_user.is_authenticated %}
+          <p class="col-md-8 fs-4">Welcome back, {{ current_user.first_name }} {{ current_user.surname }}.
+            Browse your booking history for upcoming Food and Drink events, or spread the fun by hosting a Food and Drink event.</p>
+          <a href="{{ url_for('users.display_booking_history') }}" class="btn btn-success btn-lg">Booking History</a>
+          <a href="{{ url_for('events.create') }}" class="btn btn-success btn-lg">Create Event</a>
+          {% else %}
+          <p class="col-md-8 fs-4">FoodieVent is a Food and Drinks Festival Event Manager. Feel free to browse, or join in on the fun by participating.</p>
+          <a href="{{ url_for('auth.register') }}" class="btn btn-success btn-lg">Register Now</a>
+          <a href="{{ url_for('auth.login') }}" class="btn btn-success btn-lg">Login</a>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+    <div class="carousel-item">
+      <div class="p-5 homejumbotronimage" style="background-image:url('static/img/Food.jpg'); background-position:center; background-size:cover;">
+        <div class="container-fluid py-5">
+          <h1 class="display-5 fw-bold">FoodieVent</h1>
+          {% if current_user.is_authenticated %}
+          <p class="col-md-8 fs-4">Welcome back, {{ current_user.first_name }} {{ current_user.surname }}.
+            Browse your booking history for upcoming Food and Drink events, or spread the fun by hosting a Food and Drink event.</p>
+          <a href="{{ url_for('users.display_booking_history') }}" class="btn btn-success btn-lg">Booking History</a>
+          <a href="{{ url_for('events.create') }}" class="btn btn-success btn-lg">Create Event</a>
+          {% else %}
+          <p class="col-md-8 fs-4">FoodieVent is a Food and Drinks Festival Event Manager. Feel free to browse, or join in on the fun by participating.</p>
+          <a href="{{ url_for('auth.register') }}" class="btn btn-success btn-lg">Register Now</a>
+          <a href="{{ url_for('auth.login') }}" class="btn btn-success btn-lg">Login</a>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
   </div>
-  <!-- Flex container ends -->
+
+  <button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev" aria-label="Previous">
+    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+  </button>
+  <button class="carousel-control-next" type="button" data-bs-target="#heroCarousel" data-bs-slide="next" aria-label="Next">
+    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+  </button>
+</div>
+{% endblock %}
+
+
+
+{% block content %}
+<div class="container-flex">
 
   <!-- Search Jumbotron -->
   <div id="container-search" class="container">
@@ -72,8 +87,7 @@
           <form action="{{ url_for('main.search') }}#container-search" method="get" role="search">
             <h2 class="text-center mb-3">Don't skip an opportunity! Search FoodieVent.</h2>
             <div class="input-group input-group-lg">
-              <input type="search" name="search" id="SearchForm" class="form-control" placeholder="Search FoodieVent"
-                aria-label="Search FoodieVent">
+              <input type="search" name="search" id="SearchForm" class="form-control" placeholder="Search FoodieVent" aria-label="Search FoodieVent">
               <button type="submit" class="btn btn-success">Search</button>
             </div>
           </form>
@@ -83,18 +97,13 @@
               <h1 class="text-center mb-3">Did you want a specific type of event?</h1>
               <h2 class="text-center mb-3">Browse all upcoming food and drink events by filtering their category.</h2>
               <div class="d-flex flex-column align-items-center gap-3">
-                <!-- Dropdown -->
                 <div class="dropdown">
-                  <button class="btn btn-success dropdown-toggle" type="button" id="categoryDropdown"
-                    data-bs-toggle="dropdown" aria-expanded="false">
-                    Browse by Category
-                  </button>
+                  <button class="btn btn-success dropdown-toggle" type="button" id="categoryDropdown" data-bs-toggle="dropdown" aria-expanded="false">Browse by Category</button>
                   <ul class="dropdown-menu" aria-labelledby="categoryDropdown">
                     <li><a class="dropdown-item" href="{{ url_for('main.index') }}#page-header-event">All</a></li>
                     <li><a class="dropdown-item" href="{{ url_for('main.food') }}#page-header-event">Food</a></li>
                     <li><a class="dropdown-item" href="{{ url_for('main.drink') }}#page-header-event">Drink</a></li>
-                    <li><a class="dropdown-item" href="{{ url_for('main.cultural') }}#page-header-event">Cultural</a>
-                    </li>
+                    <li><a class="dropdown-item" href="{{ url_for('main.cultural') }}#page-header-event">Cultural</a></li>
                     <li><a class="dropdown-item" href="{{ url_for('main.dietary') }}#page-header-event">Dietary</a></li>
                   </ul>
                 </div>
@@ -106,9 +115,7 @@
     </div>
   </div>
 
-  <!-- Title of events -->
   <h1 id="page-header-event" class="page-header">All recent upcoming {{ category }} events</h1>
-
 
   {% with messages = get_flashed_messages(with_categories=true, category_filter=['inline']) %}
   {% if messages %}
@@ -121,7 +128,6 @@
   {% endif %}
   {% endwith %}
 
-
   <div class="row">
     {% for event in events %}
     <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-2">
@@ -130,19 +136,9 @@
         <div class="card-body">
           <h5 class="card-title">{{ event.title }}</h5>
           <div class="d-flex align-items-center gap-2 flex-wrap mb-2">
-            {% set category_badge = {
-            'FOOD': 'bg-success',
-            'DRINK': 'bg-primary',
-            'CULTURAL': 'bg-warning',
-            'DIETARY': 'bg-danger'
-            }[event.category_type.name] %}
-            <span class="badge {{ category_badge }} ">Event Category: {{ event.category_type.name }}</span>
-            {% set status_badge = {
-            'OPEN': 'bg-success',
-            'INACTIVE': 'bg-secondary',
-            'SOLDOUT': 'bg-warning',
-            'CANCELLED': 'bg-danger'
-            }[event.status.name] %}
+            {% set category_badge = {'FOOD':'bg-success','DRINK':'bg-primary','CULTURAL':'bg-warning','DIETARY':'bg-danger'}[event.category_type.name] %}
+            <span class="badge {{ category_badge }}">Event Category: {{ event.category_type.name }}</span>
+            {% set status_badge = {'OPEN':'bg-success','INACTIVE':'bg-secondary','SOLDOUT':'bg-warning','CANCELLED':'bg-danger'}[event.status.name] %}
             <span class="badge {{ status_badge }}">Event Status: {{ event.status.name }}</span>
             <span class="badge bg-info"><span class="chip-emoji" aria-hidden="true">🎟️</span> Tickets Remaining: {{ event.total_tickets }}</span>
             <span class="badge bg-info"><span class="chip-emoji" aria-hidden="true">🕒</span> Start Time: {{ event.start_time.strftime('%Y-%m-%d %H:%M') }}</span>
@@ -151,12 +147,13 @@
           <hr>
           <p class="card-text clamp-5">{{ event.description }}</p>
         </div>
-        <div class="card-footer"><a href="{{ url_for('events.show', event_id=event.id) }}" class="btn btn-success">
-            View
-            Details </a></div>
+        <div class="card-footer">
+          <a href="{{ url_for('events.show', event_id=event.id) }}" class="btn btn-success">View Details</a>
+        </div>
       </div>
     </div>
     {% endfor %}
   </div>
+
 </div>
 {% endblock %}
