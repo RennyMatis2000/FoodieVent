@@ -1,4 +1,4 @@
-/* body css */
+/* ================= Base background + simple utility blocks ================= */
 body {
   background-color: #f5f2ec;
 }
@@ -13,7 +13,7 @@ body {
   border-radius: .5rem;
 }
 
-/* home page jumbotron css */
+/* ================= Home page hero (carousel slide styling) ================= */
 .homejumbotronimage {
   background-position: center;
   background-size: cover;
@@ -36,7 +36,7 @@ body {
      1px  1px 0 #000;
 }
 
-/* optional: a soft dark overlay for readability */
+/* Overlay for home hero to improve text contrast */
 .homejumbotronimage::before {
   content: "";
   position: absolute;
@@ -48,12 +48,12 @@ body {
   z-index: 1;
 }
 
-/* a little taller on large screens */
+/* Home hero height adjustment on large screens */
 @media (min-width: 992px) {
   .homejumbotronimage { min-height: 40vh; }
 }
 
-/* hero carousel chevrons */
+/* ================= Carousel controls (prev/next arrows) ==================== */
 #heroCarousel .carousel-control-prev,
 #heroCarousel .carousel-control-next {
   width: 4rem;
@@ -79,12 +79,13 @@ body {
   transform: scale(1.02);
 }
 
-/* make hero carousel controls pop a bit */
+/* Extra pop on carousel icons */
 #heroCarousel .carousel-control-prev-icon,
 #heroCarousel .carousel-control-next-icon {
   filter: drop-shadow(0 0 6px rgba(0,0,0,.6));
 }
 
+/* ================= Event detail card: top image crop ======================= */
 #event-detail-card .card-img-top {
   width: 100%;
   aspect-ratio: 16 / 9;   
@@ -94,7 +95,7 @@ body {
   background-color: transparent; 
 }
 
-/* event creation and update page jumbotron css */
+/* ============== Create/Update pages: hero background + overlay ============= */
 .creationjumbotronimage {
   background: url("/static/img/EventCreationJumbo.jpg") center center no-repeat;
   background-size: cover;
@@ -124,13 +125,14 @@ body {
   z-index: 1;
 }
 
+/* Card footer tone for event detail card */
 #event-detail-card .card-footer {
   background-color: rgb(233, 245, 227);
 }
 
-/* event details page jumbotron css */
+/* ================= Event details page hero (image-backed) ================== */
 .detailjumbotronimage {
-  position: relative;                 /* enable overlay */
+  position: relative;               
   display: flex;
   align-items: center;
   min-height: 20vh;
@@ -151,21 +153,21 @@ body {
   content: "";
   position: absolute;
   inset: 0;
-  background: rgba(0,0,0,.10);        /* softer overlay so flash isn’t dark */
-  z-index: 0;                         /* keep overlay under everything else */
+  background: rgba(0,0,0,.10);    
+  z-index: 0;                       
 }
 .detailjumbotronimage > .container-fluid {
-  position: relative;                 /* text above overlay */
+  position: relative;               
   z-index: 1;
 }
 
 
-/* booking page jumbotron css */
+/* ================= Booking history page hero (taller) ====================== */
 .bookingjumbotronimage {
-  position: relative;                 /* enable overlay */
+  position: relative;           
   display: flex;
   align-items: center;
-  min-height: 20vh;
+  min-height: 41.8vh;
 
   background: url("../img/BookingJumbotronImage.jpg") center center no-repeat;
   background-size: cover;
@@ -180,19 +182,19 @@ body {
 }
 
 .bookingjumbotronimage > .jumbotronback {
-  position: relative;                 /* text above overlay */
+  position: relative;               
   z-index: 1;
   min-height: 20vh;
 }
 
-/* carousel image css */
+/* ============== Generic image helpers (carousel + caps) ==================== */
 .carousel-inner img {
   height: 300px;
   object-fit: cover;
   width: 100%;
 }
 
-/* event image css */
+/* Constrain very large images on detail pages */
 .event-image-cap {
   /* event image in event details page is capped, as without this pixel cap the image can be extremely large and proportionately makes the page look smaller */
   max-width: 500px;
@@ -201,14 +203,14 @@ body {
   margin: 1rem auto;
 }
 
-/* Ensure images in the cards remain at the top with a fixed size */
+/* Default card image sizing across grids */
 .card-img-top {
   width: 100%;
   height: 200px;
   object-fit: cover;
 }
 
-/* css for title of pages to look large and uniform, and align center */
+/* ================= Page + category headers (big green bars) ================= */
 .page-header {
   background-color: rgb(233, 245, 227);
   box-shadow: 0 0 0 2px #556B2F;
@@ -234,6 +236,7 @@ body {
   font-weight: bold;
 }
 
+/* ================= Navbar brand (logo + name alignment) ==================== */
 .navbar .navbar-brand{
   display: flex;
   align-items: center;
@@ -254,7 +257,7 @@ body {
   font-weight: 700;      
 }
 
-/* css for food event categories to look medium size and uniform, and align center*/
+/* ================= Category header (smaller variant override) ============== */
 .category-header {
   font-size: 2rem;
   color: #556B2F;
@@ -265,7 +268,7 @@ body {
   font-weight: bold;
 }
 
-/* css for titles of each event details row section to look medium sized and uniform, and align left */
+/* ================= Event detail section titles ============================ */
 .detail-header {
   font-weight: bold;
   font-size: 2rem;
@@ -277,7 +280,7 @@ body {
 }
 
 
-/* change font of descriptions */
+/* ================= Descriptive paragraph text ============================= */
 .event-descriptive {
   font-family: 'Raleway';
   color: #000000;
@@ -287,25 +290,25 @@ body {
   padding-right: 2rem;
 }
 
-/* change navbar visually */
+/* ================= Navbar theme + search font ============================== */
 .navbar {
   font-family: 'Roboto Mono';
   background-color: rgb(198, 221, 187);
 }
 
-/* change searchbar placeholder text font */
+/* Search input font alignment with theme */
 .searchbar {
   font-family: 'Roboto Mono';
 }
 
-/* change card title font for visibility */
+/* ================= Card typography & emphasis ============================== */
 .card-title {
   font-family: 'Merriweather';
   color: #008b35;
   font-weight: bold;
 }
 
-/* change search feature text */
+/* Headings with centered green theme */
 .text-center {
   font-family: 'Merriweather';
   color: #008b35;
@@ -331,30 +334,31 @@ body {
   justify-content: center;
 }
 
-/* change card font for the descriptions */
+/* Card body copy colour */
 .card-body {
   font-family: 'Raleway';
   color: #008b35;
 }
 
-/* change card text font and colour for booking ID and booked on time */
+/* Info lines inside cards (IDs, times) */
 .card-text-info {
   font-family: 'Merriweather';
   color: #008b35;
 }
 
-/* change form font */
+/* ================= Forms (fonts + helper text) ============================ */
 form {
   font-family: 'Raleway';
   font-weight: bold;
   color: #556B2F;
 }
 
-/* change form text font */
+/* Mini helper text under inputs */
 .form-text {
   color: #556B2F;
 }
 
+/* ================= Status/intent accents (labels) ========================= */
 .cancel-event {
   color: #dc3545 !important;
   font-weight: 600;
@@ -370,12 +374,12 @@ form {
   font-weight: 600;
 }
 
-/* change font of the comment section */
+/* ================= Lists + footer styling ================================= */
 .list-group-item {
   font-family: 'Roboto Mono';
 }
 
-/* change footer visually */
+/* Global footer look and spacing */
 footer {
   display: block;
   width: 100%;
@@ -386,6 +390,7 @@ footer {
   font-weight: bold;
 }
 
+/* ================= Text clamping utilities ================================ */
 .clamp-5 {
   display: -webkit-box;
   -webkit-box-orient: vertical;
@@ -407,24 +412,24 @@ footer {
   overflow-wrap: anywhere;              
 }
 
-/* change font and colour of all modal popups */
+/* ================= Modals + buttons typography ============================ */
 .modal-content {
   font-family: 'Roboto Mono';
   color: #556B2F;
 }
 
-/* change all buttons to display Roboto Mono font */
+/* Make success buttons use Roboto Mono */
 .btn-success {
   font-family: 'Roboto Mono';
 }
 
-/* change all buttons to display Roboto Mono font */
+/* Make danger buttons use Roboto Mono */
 .btn-danger {
   font-family: 'Roboto Mono';
 }
 
 
-/* ensure visually there is a separation from the box of the footer bar, and the footer of the entire webpage */
+/* ================= Footer bar + search card colours ======================= */
 .foodievent-footer {
   background-color: rgb(211, 231, 201);
   font-family: 'Merriweather';
@@ -434,25 +439,25 @@ footer {
   background-color: rgb(211, 231, 201);
 }
 
-/* offset container-flex expanding offscreen through use of padding */
+/* ================= Container padding guards (prevent edge bleed) ========== */
 .container-flex {
   padding-left: 0.75rem;
   padding-right: 0.75rem;
 }
 
-/* offset row border bottom expanding offscreen through use of padding */
+/* Footer border row padding */
 .container-footer .border-bottom {
   padding-left: 0.75rem;
   padding-right: 0.75rem;
 }
 
-/* offset container fluid expanding offscreen through use of padding */
+/* Generic container fluid padding */
 .container-fluid {
   padding-left: 0.75rem;
   padding-right: 0.75rem;
 }
 
-/* Create container css */
+/* ================= Create/Update page container =========================== */
 .container-create {
   font-family: 'Raleway';
   font-weight: bold;
@@ -462,7 +467,7 @@ footer {
   padding-bottom: 3rem;
 }
 
-/* Alert css to fit theme of FoodieVent website */
+/* ================= Alerts (on-brand border + shadow) ====================== */
 .alert {
   border: none;
   border-left: 6px solid #198754;
@@ -471,6 +476,7 @@ footer {
   font-weight: 600;
 }
 
+/* ================= Small text helpers ==================================== */
 .register-text {
   font-family: 'Raleway';
   font-weight: bold;
@@ -481,8 +487,7 @@ footer {
   background-color: #caf0c5
 }
 
-
-/* Card base + motion */
+/* ================= Cards: motion/hover effects ============================ */
 .card.hover-lift {
   transition: transform .28s cubic-bezier(.22,.61,.36,1), box-shadow .28s ease, outline-color .28s ease;
   will-change: transform, box-shadow;
@@ -491,7 +496,7 @@ footer {
   position: relative;
 }
 
-/* Lift + soft ring */
+/* Elevated hover effect + soft outline */
 .card.hover-lift:hover {
   transform: translateY(-7px);
   box-shadow: 0 16px 30px rgba(0,0,0,.16), 0 8px 16px rgba(0,0,0,.08);
@@ -499,13 +504,13 @@ footer {
   outline-offset: 0;
 }
 
-/* Keyboard focus ring */
+/* Keyboard focus ring for accessibility */
 .card.hover-lift:focus-visible {
   outline: 2px solid rgba(25,135,84,.45);
   outline-offset: 0;
 }
 
-/* Image zoom + gentle pop */
+/* Card image zoom on hover */
 .card.hover-lift .card-img-top {
   transition: transform .45s cubic-bezier(.22,.61,.36,1), filter .25s ease;
   will-change: transform, filter;
@@ -516,7 +521,7 @@ footer {
   filter: contrast(1.04) saturate(1.07);
 }
 
-/* Top gradient depth (slightly lighter) */
+/* Top gradient depth on hover */
 .card.hover-lift::after {
   content: "";
   position: absolute;
@@ -529,7 +534,7 @@ footer {
   background: linear-gradient(to bottom, rgba(0,0,0,.08), rgba(0,0,0,0) 40%);
 }
 
-/* Shiny sweep (narrower band + softer core) */
+/* Shiny diagonal sweep effect */
 .card.hover-lift::before {
   content: "";
   position: absolute;
@@ -537,26 +542,25 @@ footer {
   background:
     linear-gradient(120deg,
       transparent 46%,
-      rgba(255,255,255,.26) 50%,   /* softer core */
+      rgba(255,255,255,.26) 50%,  
       transparent 54%
     ),
     radial-gradient(40% 80% at 50% 50%, rgba(255,255,255,.18), transparent 60%);
   transform: translateX(-130%) skewX(-8deg);
   mix-blend-mode: screen;
   filter: drop-shadow(0 0 10px rgba(255,255,255,.25));
-  opacity: .70;                              /* base sheen strength */
+  opacity: .70;                             
   transition: transform .7s ease, opacity .25s ease;
   pointer-events: none;
 }
 .card.hover-lift:hover::before {
   transform: translateX(130%) skewX(-8deg);
-  opacity: .88;                              /* toned-down hover */
+  opacity: .88;                              
 }
 
-/* Ripple container */
+/* ================= Ripple click/tap feedback ============================== */
 .ripple { position: relative; overflow: hidden; }
 
-/* Ripple pulse */
 .ripple:after {
   content: "";
   position: absolute;
@@ -571,7 +575,7 @@ footer {
   transition: opacity .15s ease;
 }
 
-/* Reduced motion */
+/* ================= Reduced motion preference support ===================== */
 @media (prefers-reduced-motion: reduce) {
   .card.hover-lift,
   .card.hover-lift .card-img-top {
@@ -579,6 +583,7 @@ footer {
   }
 }
 
+/* ================= Flash message overlay in hero sections ================= */
 .flash-hero {
   position: absolute;
   top: .75rem;
