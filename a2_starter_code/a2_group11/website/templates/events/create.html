@@ -2,34 +2,40 @@
 <!--This is extending the basic layout already in base.html -->
 {% from 'bootstrap5/form.html' import render_field %}
 <!--Ensures consistent bootstrap-->
-{% block content %}
 
-<!-- The container for event creation page -->
-<div class="container-create">
-  <!-- Event Creation and Update page Jumbotron(large banner) -->
+{# === Full-bleed jumbotron header (matches booking/view pages) === #}
+{% block header %}
   <div class="p-5 creationjumbotronimage rounded-3">
-    <div class="jumbotronback container-fluid py-5 ">
+    <div class="jumbotronback container-fluid py-5">
       <!--Page title-->
       <h1 class="display-5 fw-bold">Create an Event</h1>
       <!--Text introducing the page-->
-      <p class="col-md-8 fs-4">At FoodieVent, it's not just an event. Share memories, bring people
-        together. Enjoy food, drinks, and company. Start creating now.</p>
+      <p class="col-md-8 fs-4">
+        At FoodieVent, it's not just an event. Share memories, bring people
+        together. Enjoy food, drinks, and company. Start creating now.
+      </p>
     </div>
   </div>
+{% endblock %}
 
-  <!-- Creating events form section  -->
-  <div class="row mt-5">
-    <!--Centered viewing on medium and large screens-->
-    <div class="col-12 col-md-10 col-lg-8 offset-md-2">
-      <!-- Rendering forms using Flask WTF and Bootstrap 5 styling-->
-      <form method="POST" action="{{ url_for('events.create') }}" enctype="multipart/form-data">
-        {% for field in form if field.name not in ['cancel_event', 'reopen_event', 'submit'] %}
-        {{ render_field(field) }}
-        {% endfor %}
-        {{ render_field(form.submit, class="btn btn-success") }}
-      </form>
+{% block content %}
+  <!-- The container for event creation page -->
+  <div class="container-create pb-5">
+    <!-- Creating events form section  -->
+    <div class="row mt-5">
+      <!--Centered viewing on medium and large screens-->
+      <div class="col-12 col-md-10 col-lg-8 offset-md-2">
+        <!-- Rendering forms using Flask WTF and Bootstrap 5 styling-->
+        <form method="POST" action="{{ url_for('events.create') }}" enctype="multipart/form-data">
+          {% for field in form if field.name not in ['cancel_event', 'reopen_event', 'submit'] %}
+            {{ render_field(field) }}
+          {% endfor %}
+          {{ render_field(form.submit, class="btn btn-success") }}
+        </form>
+      </div>
     </div>
-  </div>
-</div>
 
+    <!-- Spacer above the footer so the form doesn’t touch it -->
+    <div class="my-5"></div>
+  </div>
 {% endblock %}

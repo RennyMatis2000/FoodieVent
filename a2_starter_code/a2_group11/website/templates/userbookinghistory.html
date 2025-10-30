@@ -2,9 +2,28 @@
 
 {% block title %}FoodieVent - User Booking History Page{% endblock %}
 
+{# Disable the base flash row so we can show it inside the hero #}
+{% block flashes %}{% endblock %}
+
+
 {% block header %}
-<!-- Booking History page Jumbotron -->
-<div class="p-5 bookingjumbotronimage rounded-3">
+<!-- Booking History page Jumbotron (flash overlay inside) -->
+<div class="p-5 bookingjumbotronimage rounded-3 position-relative">
+
+  {# Flash overlay inside the hero #}
+  {%- with flashes = get_flashed_messages(with_categories=true, category_filter=['success','info','warning','danger']) -%}
+    {%- if flashes -%}
+      <div class="flash-hero">
+        {%- for category, message in flashes -%}
+          <div class="alert alert-{{ 'warning' if not category else category }} alert-dismissible fade show shadow mb-2" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+          </div>
+        {%- endfor -%}
+      </div>
+    {%- endif -%}
+  {%- endwith -%}
+
   <div class="jumbotronback container-fluid py-5">
     <h1 class="display-5 fw-bold">
       Booking History for {{ current_user.first_name }} {{ current_user.surname }}
@@ -80,7 +99,7 @@
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
-            <p>Are you sure you want to cancel order <strong>#{{ order.id }}</strong>
+            <p>Are you sure you want to cancel order <strong>#{{ order.id }}</strong>?
               All payments will be immediately refunded. This action is final and cannot be undone.</p>
           </div>
           <div class="modal-footer">

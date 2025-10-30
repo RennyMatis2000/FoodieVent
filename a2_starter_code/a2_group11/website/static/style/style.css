@@ -106,6 +106,23 @@ body {
     1px -1px 0 #000,
     -1px 1px 0 #000,
     1px 1px 0 #000;
+
+  position: relative;         
+  display: flex;              
+  align-items: center;
+  min-height: 60vh;         
+}
+
+.creationjumbotronimage::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,.10); 
+}
+
+.creationjumbotronimage > .jumbotronback {
+  position: relative;        
+  z-index: 1;
 }
 
 #event-detail-card .card-footer {
@@ -114,30 +131,67 @@ body {
 
 /* event details page jumbotron css */
 .detailjumbotronimage {
+  position: relative;                 /* enable overlay */
+  display: flex;
+  align-items: center;
+  min-height: 60vh;
+
+  background-position: center;
   background-size: cover;
-  color: white;
+  background-repeat: no-repeat;
+
+  color: #fff;
   font-family: 'Merriweather';
-  /* black outline on white font for maximum readability over multiple colours */
   text-shadow:
     -1px -1px 0 #000,
-    1px -1px 0 #000,
-    -1px 1px 0 #000,
-    1px 1px 0 #000;
+     1px -1px 0 #000,
+    -1px  1px 0 #000,
+     1px  1px 0 #000;
 }
+.detailjumbotronimage::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,.10);        /* softer overlay so flash isn’t dark */
+  z-index: 0;                         /* keep overlay under everything else */
+}
+.detailjumbotronimage > .container-fluid {
+  position: relative;                 /* text above overlay */
+  z-index: 1;
+}
+
 
 /* booking page jumbotron css */
 .bookingjumbotronimage {
-  background: url("../img/BookingJumbotronImage.jpg") center center;
+  position: relative;                 /* enable overlay */
+  display: flex;
+  align-items: center;
+  min-height: 60vh;
+
+  background: url("../img/BookingJumbotronImage.jpg") center center no-repeat;
   background-size: cover;
-  color: white;
+
+  color: #fff;
   font-family: 'Merriweather';
-  /* black outline on white font for maximum readability over multiple colours */
   text-shadow:
     -1px -1px 0 #000,
-    1px -1px 0 #000,
-    -1px 1px 0 #000,
-    1px 1px 0 #000;
+     1px -1px 0 #000,
+    -1px  1px 0 #000,
+     1px  1px 0 #000;
 }
+.bookingjumbotronimage::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,.10);        /* softer overlay so flash isn’t dark */
+  z-index: 0;
+}
+.bookingjumbotronimage > .jumbotronback {
+  position: relative;                 /* text above overlay */
+  z-index: 1;
+}
+
+
 
 /* carousel image css */
 .carousel-inner img {
@@ -188,15 +242,26 @@ body {
   font-weight: bold;
 }
 
-.navbar-brand {
-  background-color: rgb(233, 245, 227);
-  box-shadow: 0 0 0 2px rgb(255, 255, 255);
-  color: #556B2F;
-  text-align: center;
-  margin-top: 1rem;
-  margin-bottom: 1rem;
-  font-family: 'Merriweather';
-  font-weight: bold;
+.navbar .navbar-brand{
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  height: 56px;           
+  line-height: 1;
+  margin-top: 1rem;       
+  margin-bottom: 1rem;     
+}
+
+.navbar .navbar-brand .brand-logo{
+  height: 56px;        
+  width: auto;
+  transform: scale(1.25);  
+  transform-origin: left center;
+}
+
+.navbar .navbar-brand span{
+  font-family: 'Merriweather', serif;
+  font-weight: 700;      
 }
 
 /* css for food event categories to look medium size and uniform, and align center*/
@@ -394,6 +459,7 @@ footer {
   color: #556B2F;
   padding-left: 0.75rem;
   padding-right: 0.75rem;
+  padding-bottom: 3rem;
 }
 
 /* Alert css to fit theme of FoodieVent website */
@@ -513,3 +579,19 @@ footer {
   }
 }
 
+.flash-hero {
+  position: absolute;
+  top: .75rem;
+  left: clamp(.5rem, 2vw, 1rem);
+  right: clamp(.5rem, 2vw, 1rem);
+  z-index: 20;
+}
+.flash-hero .alert {
+  border-radius: .25rem;
+  margin: 0;
+}
+
+.flash-hero,
+.flash-hero * {
+  text-shadow: none !important;
+}

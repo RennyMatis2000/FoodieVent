@@ -1,9 +1,29 @@
 {% extends "base.html" %}
 {% from 'bootstrap5/form.html' import render_form, render_field %}
+
+{# Disable the base flash row so we can show it inside the hero #}
+{% block flashes %}{% endblock %}
+
 {% block content %}
 
-<!-- Event details page Jumbotron -->
-<div class="p-5 detailjumbotronimage rounded-3" style="background-image: url('{{ event.image }}');">
+<!-- Event details page Jumbotron (no flash overlay inside) -->
+<div class="p-5 detailjumbotronimage rounded-3 position-relative"
+     style="background-image: url('{{ event.image }}');">
+
+  {# Flash overlay inside the hero #}
+  {%- with flashes = get_flashed_messages(with_categories=true, category_filter=['success','info','warning','danger']) -%}
+    {%- if flashes -%}
+      <div class="flash-hero">
+        {%- for category, message in flashes -%}
+          <div class="alert alert-{{ 'warning' if not category else category }} alert-dismissible fade show shadow mb-2" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+          </div>
+        {%- endfor -%}
+      </div>
+    {%- endif -%}
+  {%- endwith -%}
+
   <div class="container-fluid py-5">
     <h1 class="display-5 fw-bold">Event Details</h1>
     <p class="col-md-8 fs-4">
@@ -200,7 +220,7 @@
             </div>
           </div>
 
-          <!-- Comment flashes -->
+          <!-- Comment flashes (keep only comment categories here) -->
           {% with messages = get_flashed_messages(with_categories=true, category_filter=['comment', 'comment-error']) %}
             {% if messages %}
               {% for category, message in messages %}
@@ -234,9 +254,9 @@
             </div>
           </div>
 
-        </div> 
+        </div>
 
-      </div> 
+      </div>
     </div>
   </div>
 </div>

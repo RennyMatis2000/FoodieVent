@@ -1,23 +1,31 @@
+<!doctype html>
 <html>
 
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
+        crossorigin="anonymous"
+    >
 
     <!-- Custom css style sheet, with googles apis for the fonts Merriweather, Raleway and Roboto Mono -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
         href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&family=Raleway:wght@400;600;700&family=Roboto+Mono:wght@400;700&display=swap"
-        rel="stylesheet">
+        rel="stylesheet"
+    >
     <link rel="stylesheet" href="{{ url_for('static', filename='style/style.css') }}">
 
     <!-- Custom css bootstrap icons -->
-    <link rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css"
+    >
 
     <!-- Title -->
     <title>{% block title %}FoodieVent Base{% endblock %}</title>
@@ -37,7 +45,8 @@
                             src="{{ url_for('static', filename='img/FoodieVentLogo.png') }}"
                             alt="FoodieVent logo"
                             class="brand-logo"
-                            width="34" height="34"
+                            width="34"
+                            height="34"
                             loading="eager"
                         />
                         <span>FoodieVent</span>
@@ -48,14 +57,15 @@
                         <span class="navbar-toggler-icon"></span>
                     </button>
                     <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        <ul class="navbar-nav ms-4 me-auto mb-2 mb-lg-0">
                             {% if current_user.is_authenticated %}
                             <li class="nav-item">
                                 <a class="nav-link" href="{{ url_for('events.create') }}">Create Event</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="{{ url_for('users.display_booking_history') }}">Booking
-                                    History</a>
+                                <a class="nav-link" href="{{ url_for('users.display_booking_history') }}">
+                                    Booking History
+                                </a>
                             </li>
 
                             <!-- Wrap toggle + dropdown in one li -->
@@ -81,37 +91,40 @@
                             </li>
                             {% endif %}
                         </ul>
-                        <form class="d-flex" role="search" method="get" action="{{ url_for('main.search') }}#page-header-event">
+                        <form class="d-flex" role="search" method="get"
+                            action="{{ url_for('main.search') }}#page-header-event">
                             <input class="form-control me-2 searchbar" type="search" name="search"
-                            placeholder="Search FoodieVent"
-                            aria-label="Search">
+                                placeholder="Search FoodieVent"
+                                aria-label="Search">
                             <button class="btn btn-success" type="submit">Search</button>
                         </form>
                     </div>
                 </div>
             </nav>
-            <!-- Code for using Flask flash -->
-            {% with flashes = get_flashed_messages(with_categories=true, category_filter=['success','info','warning','danger']) %}
-            {% if flashes %}
-            <div class="container-fluid py-2">
-                {% for category, message in flashes %}
-                <div class="alert alert-{{ 'warning' if not category else category }} alert-dismissible fade show mb-0" role="alert">
-                    {{ message }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-                {% endfor %}
-            </div>
-            {% endif %}
-            {% endwith %}
-            </div>            
-            {% block header %}
 
+            {# === overridable flash location === #}
+            {% block flashes %}
+            {%- with flashes = get_flashed_messages(with_categories=true, category_filter=['success','info','warning','danger']) -%}
+              {%- if flashes -%}
+              <div class="container-fluid py-2 flash-wrap">
+                {%- for category, message in flashes -%}
+                <div class="alert alert-{{ 'warning' if not category else category }} alert-dismissible fade show mb-0" role="alert">
+                  {{ message }}
+                  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+                {%- endfor -%}
+              </div>
+              {%- endif -%}
+            {%- endwith -%}
+            {% endblock %}
+            {# === end overridable flash location === #}
+
+            {% block header %}
             {% endblock %}
 
         </header>
 
         {% block content %}
-
         {% endblock %}
 
     </main>
@@ -157,10 +170,13 @@
             </div>
         </div>
     </footer>
+
     <!-- Bootstrap js end of page -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+    <script
+        src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
-        crossorigin="anonymous"></script>
+        crossorigin="anonymous"
+    ></script>
 </body>
 
 </html>

@@ -1,9 +1,28 @@
 {% extends "base.html" %}
 {% block title %}FoodieVent Home Page{% endblock %}
 
+{# 1) Disable the default flash area from base.html #}
+{% block flashes %}{% endblock %}
+
 {% block header %}
 <!-- Hero with background carousel -->
-<div id="heroCarousel" class="carousel slide mb-1 overflow-hidden" data-bs-ride="carousel" data-bs-interval="5000">
+<div id="heroCarousel" class="carousel slide mb-1 overflow-hidden position-relative"
+     data-bs-ride="carousel" data-bs-interval="5000">
+
+  {# 2) Flash overlay ON the hero #}
+  {% with flashes = get_flashed_messages(with_categories=true, category_filter=['success','info','warning','danger']) %}
+  {% if flashes %}
+    <div class="flash-hero">
+      {% for category, message in flashes %}
+        <div class="alert alert-{{ 'warning' if not category else category }} alert-dismissible fade show shadow mb-2" role="alert">
+          {{ message }}
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+  {% endwith %}
+
   <div class="carousel-inner">
 
     <div class="carousel-item active">
@@ -36,7 +55,7 @@
           <a href="{{ url_for('users.display_booking_history') }}" class="btn btn-success btn-lg">Booking History</a>
           <a href="{{ url_for('events.create') }}" class="btn btn-success btn-lg">Create Event</a>
           {% else %}
-          <p class="col-md-8 fs-4">FoodieVent is a Food and Drinks Festival Event Manager. Feel free to browse, or join in on the fun by participating.</p>
+          <p class="col-md-8 fs-4">From brunch pop-ups to cultural feasts, discover experiences that turn time with friends into lasting memories.</p>
           <a href="{{ url_for('auth.register') }}" class="btn btn-success btn-lg">Register Now</a>
           <a href="{{ url_for('auth.login') }}" class="btn btn-success btn-lg">Login</a>
           {% endif %}
@@ -54,7 +73,7 @@
           <a href="{{ url_for('users.display_booking_history') }}" class="btn btn-success btn-lg">Booking History</a>
           <a href="{{ url_for('events.create') }}" class="btn btn-success btn-lg">Create Event</a>
           {% else %}
-          <p class="col-md-8 fs-4">FoodieVent is a Food and Drinks Festival Event Manager. Feel free to browse, or join in on the fun by participating.</p>
+          <p class="col-md-8 fs-4">Share your passion for food with FoodieVent and turn every dish into an experience.</p>
           <a href="{{ url_for('auth.register') }}" class="btn btn-success btn-lg">Register Now</a>
           <a href="{{ url_for('auth.login') }}" class="btn btn-success btn-lg">Login</a>
           {% endif %}
@@ -72,8 +91,6 @@
   </button>
 </div>
 {% endblock %}
-
-
 
 {% block content %}
 <div class="container-flex">
@@ -117,14 +134,15 @@
 
   <h1 id="page-header-event" class="page-header">All recent upcoming {{ category }} events</h1>
 
+  {# Inline flashes area left unchanged #}
   {% with messages = get_flashed_messages(with_categories=true, category_filter=['inline']) %}
   {% if messages %}
-  {% for _, message in messages %}
-  <div class="alert alert-info alert-dismissible fade show" role="alert">
-    {{ message }}
-    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-  </div>
-  {% endfor %}
+    {% for _, message in messages %}
+      <div class="alert alert-info alert-dismissible fade show" role="alert">
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+    {% endfor %}
   {% endif %}
   {% endwith %}
 
