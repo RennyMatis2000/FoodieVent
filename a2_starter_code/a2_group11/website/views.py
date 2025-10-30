@@ -103,6 +103,10 @@ def display_event_details():
     live_status()
     return render_template('eventdetails.html')
 
+@views.route('/force500')
+def force_500():
+    1 / 0 
+
 # @main_bp.route('/login', methods = ['GET', 'POST'])
 # def login():
 #     email = request.values.get("email")
