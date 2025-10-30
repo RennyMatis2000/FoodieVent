@@ -152,7 +152,7 @@
       <div class="card hover-lift ripple w-100 h-300" tabindex="0">
         <img class="card-img-top" src="{{ event.image }}" alt="event picture">
         <div class="card-body">
-          <h5 class="card-title">{{ event.title }}</h5>
+          <h5 class="card-title clamp-2">{{ event.title }}</h5>
           <div class="d-flex align-items-center gap-2 flex-wrap mb-2">
             {% set category_badge = {'FOOD':'bg-success','DRINK':'bg-primary','CULTURAL':'bg-warning','DIETARY':'bg-danger'}[event.category_type.name] %}
             <span class="badge {{ category_badge }}">Event Category: {{ event.category_type.name }}</span>

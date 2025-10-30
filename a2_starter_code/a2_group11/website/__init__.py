@@ -38,7 +38,7 @@ def create_app():
     from .models import User 
     @login_manager.user_loader 
     def load_user(user_id): 
-        db.session.scalar(db.select(User).where(User.id==user_id))
+        return db.session.scalar(db.select(User).where(User.id==user_id))
 
     # Inbuilt function for handling 404 errors
     @app.errorhandler(404)
@@ -46,7 +46,6 @@ def create_app():
         # Error is displayed as error message on 404.html
         return render_template('404.html', error=e), 404
         
-
     # Inbuilt function for handling 500 errors
     # Error 500 will not handle if a user is logged in as the database is deleted
     # This is because load_user will be called to an empty database, while there is a cookie for a logged in user

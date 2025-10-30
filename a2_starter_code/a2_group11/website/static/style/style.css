@@ -8,7 +8,7 @@ body {
 }
 
 .comment-border {
-  background-color: #ffffff;
+  background-color: #f5f2ec;
   box-shadow: 0 0 0 2px #198754;
   border-radius: .5rem;
 }
@@ -406,6 +406,16 @@ footer {
   min-height: calc(1.25rem * 5);
   white-space: normal;
   word-break: break-word;
+}
+
+.clamp-2 {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  line-height: 1.25rem;                 
+  min-height: calc(1.25rem * 2);        
+  overflow-wrap: anywhere;              
 }
 
 /* change font and colour of all modal popups */

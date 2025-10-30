@@ -5,23 +5,23 @@
 {# Disable the base flash row so we can show it inside the hero #}
 {% block flashes %}{% endblock %}
 
-
 {% block header %}
 <!-- Booking History page Jumbotron (flash overlay inside) -->
 <div class="p-5 bookingjumbotronimage rounded-3 position-relative">
-
   {# Flash overlay inside the hero #}
-  {%- with flashes = get_flashed_messages(with_categories=true, category_filter=['success','info','warning','danger']) -%}
-    {%- if flashes -%}
-      <div class="flash-hero">
-        {%- for category, message in flashes -%}
-          <div class="alert alert-{{ 'warning' if not category else category }} alert-dismissible fade show shadow mb-2" role="alert">
-            {{ message }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-          </div>
-        {%- endfor -%}
-      </div>
-    {%- endif -%}
+  {%- with flashes = get_flashed_messages(with_categories=true, category_filter=['success','info','warning','danger'])
+  -%}
+  {%- if flashes -%}
+  <div class="flash-hero">
+    {%- for category, message in flashes -%}
+    <div class="alert alert-{{ 'warning' if not category else category }} alert-dismissible fade show shadow mb-2"
+      role="alert">
+      {{ message }}
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    {%- endfor -%}
+  </div>
+  {%- endif -%}
   {%- endwith -%}
 
   <div class="jumbotronback container-fluid py-5">
@@ -34,7 +34,6 @@
 {% endblock %}
 
 {% block content %}
-<!-- Flex container begins -->
 <div class="container-fluid">
   <!-- title row -->
   <div class="row">
@@ -45,41 +44,44 @@
     </div>
   </div>
 
-  <div class="row">
+  <div class="row g-3">
     {% for order in orders %}
     <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-2">
       <div class="card hover-lift ripple w-100 h-300" tabindex="0">
         <img class="card-img-top" src="{{ order.event.image }}" alt="event picture">
         <div class="card-body">
-          <h5 class="card-title">{{ order.event.title }}</h5>
+          <h5 class="card-title clamp-2">{{ order.event.title }}</h5>
+
           {% set status_badge = {
           'OPEN': 'bg-success',
           'INACTIVE': 'bg-secondary',
           'SOLDOUT': 'bg-warning text-dark',
           'CANCELLED': 'bg-danger'
           }[order.event.status.name] %}
+
           <span class="badge {{ status_badge }} mb-3">Event Status: {{ order.event.status.name }}</span>
+
           {% set ticket_badge = {
           'ACTIVE':'bg-success',
           'INACTIVE':'bg-secondary',
           'CANCELLED':'bg-danger'
           }[order.ticket_status.name] %}
+
           <span class="badge {{ ticket_badge }} mb-3">Ticket Status: {{ order.ticket_status.name }}</span>
+
           <p class="card-text"><i class="bi bi-book"></i> Order Number: #{{ order.id }}</p>
           <p class="card-text"><i class="bi bi-ticket-fill"></i> Tickets: {{ order.tickets_purchased }}</p>
           <p class="card-text"><i class="bi bi-cash-coin"></i> Price per ticket: ${{ order.event.ticket_price }}</p>
           <p class="card-text"><i class="bi bi-cash-coin"></i> Amount paid: ${{ order.purchased_amount }}</p>
-          <p class="card-text"><i class="bi bi-calendar-check-fill"></i> Booked at: {{ order.booking_time.strftime('%Y-%m-%d %H:%M') }}</p>
+          <p class="card-text"><i class="bi bi-calendar-check-fill"></i> Booked at: {{
+            order.booking_time.strftime('%Y-%m-%d %H:%M') }}</p>
           <hr>
           <p class="card-text clamp-5">{{ order.event.description }}</p>
         </div>
 
         <div class="card-footer">
-          <a href="{{ url_for('events.show', event_id=order.event.id) }}" class="btn btn-success">
-            View Event
-          </a>
+          <a href="{{ url_for('events.show', event_id=order.event.id) }}" class="btn btn-success">View Event</a>
           {% if order.ticket_status.name == 'ACTIVE' %}
-          <!-- Cancel Order button triggers this order's modal -->
           <button type="button" class="btn btn-danger" data-bs-toggle="modal"
             data-bs-target="#cancelOrderModal{{ order.id }}">
             Cancel
@@ -89,6 +91,7 @@
       </div>
     </div>
 
+    {% if order.ticket_status.name == 'ACTIVE' %}
     <!-- Modal for this order -->
     <div class="modal fade" id="cancelOrderModal{{ order.id }}" tabindex="-1"
       aria-labelledby="cancelOrderLabel{{ order.id }}" aria-hidden="true">
@@ -99,14 +102,26 @@
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
-            <p>Are you sure you want to cancel order <strong>#{{ order.id }}</strong>?
-              All payments will be immediately refunded. This action is final and cannot be undone.</p>
+            <p>Are you sure you want to cancel order <strong>#{{ order.id }}</strong>? All payments will be immediately
+              refunded. This action is final and cannot be undone.</p>
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No, keep booking</button>
-            <a href="{{ url_for('orders.cancel_order', order_id=order.id) }}" class="btn btn-danger">
-              Yes, cancel booking
-            </a>
+            <a href="{{ url_for('orders.cancel_order', order_id=order.id) }}" class="btn btn-danger">Yes, cancel
+              booking</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endif %}
+    {% else %}
+    <!-- Shown only when there are NO orders -->
+    <div id="container-search" class="container">
+      <div class="row justify-content-center mt-5 pb-4">
+        <div class="col-md-12">
+          <div class="card-search shadow p-5 mb-3 text-center">
+            <h1 class="mb-3">Haven't booked yet? Find the event that is just right for you.</h1>
+            <a class="btn btn-success" href="{{ url_for('main.index') }}#page-header-event">Browse Events</a>
           </div>
         </div>
       </div>
