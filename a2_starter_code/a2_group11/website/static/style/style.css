@@ -558,23 +558,6 @@ footer {
   opacity: .88;                              
 }
 
-/* ================= Ripple click/tap feedback ============================== */
-.ripple { position: relative; overflow: hidden; }
-
-.ripple:after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(circle at var(--x,50%) var(--y,50%), rgba(25,135,84,.15), transparent 42%);
-  opacity: 0;
-  transition: opacity .6s ease;
-  pointer-events: none;
-}
-.ripple:active:after {
-  opacity: 1;
-  transition: opacity .15s ease;
-}
-
 /* ================= Reduced motion preference support ===================== */
 @media (prefers-reduced-motion: reduce) {
   .card.hover-lift,
