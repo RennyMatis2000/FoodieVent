@@ -75,25 +75,6 @@ def _title_slug(s: str) -> str:
     s = unicodedata.normalize("NFKD", s).lower()
     return re.sub(r"[^a-z0-9]+", "", s)
 
-class PriceAtLeast:
-    """
-    Decimal-safe min validator for money values.
-    Avoids float quirks that can trip NumberRange for edge inputs like '0.01'.
-    """
-    def __init__(self, minimum="0.01", message=None):
-        self.minimum = Decimal(str(minimum))
-        self.message = message or f"Must be at least ${self.minimum.quantize(Decimal('0.01'))}"
-
-    def __call__(self, form, field):
-        try:
-            val = field.data
-            if not isinstance(val, Decimal):
-                val = Decimal(str(val))
-        except (InvalidOperation, TypeError):
-            raise ValidationError("Enter a valid price, e.g. 0.01")
-        if val < self.minimum:
-            raise ValidationError(self.message)
-
 # ---------- Custom validators ----------
 
 class NameHuman:
@@ -276,8 +257,7 @@ class EventForm(FlaskForm):
         "Individual ticket price",
         places=2,
         widget=NumberInput(),
-        validators=[InputRequired(), PriceAtLeast("0.01")],
-        render_kw={"min": "0.01", "step": "0.01"}
+        validators=[InputRequired()],
     )
     free_sampling = BooleanField("Free sampling?")
     provide_takeaway = BooleanField("Provide takeaway?")
@@ -427,7 +407,14 @@ class RegisterForm(FlaskForm):
         if db.session.scalar(db.select(User).where(User.phone == field.data)):
             raise ValidationError("This mobile number is already registered.")
 
+# Strip comment method ensures the comment cannot be blank  
+def strip_comment(value):
+    return value.strip() if isinstance(value, str) else value
+
 class CommentForm(FlaskForm):
     contents = TextAreaField(
-        "Want to share your thoughts? Post a comment below.", validators=[InputRequired()])
+        "Want to share your thoughts? Post a comment below.",
+        filters=[strip_comment],
+        validators=[DataRequired(message="Please enter a comment."), Length(max=1000)]
+    )
     submit = SubmitField("Post Comment")

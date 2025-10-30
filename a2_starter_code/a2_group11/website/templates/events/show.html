@@ -175,7 +175,7 @@
             <div class="modal-dialog">
               <div class="modal-content">
                 <form id="purchaseForm" method="POST"
-                      action="{{ url_for('events.purchase_tickets', event_id=event.id) }}">
+                      action="{{ url_for('orders.purchase_tickets', event_id=event.id) }}">
                   <div class="modal-header">
                     <h3 class="modal-title" id="bookTicketsLabel">Book Order by Purchasing Tickets</h3>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
