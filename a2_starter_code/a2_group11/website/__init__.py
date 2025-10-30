@@ -12,7 +12,7 @@ def create_app():
   
    app = Flask(__name__)  # This is the name of the module/package that is calling this app
    # As the website is in a production environment, debug is set to False
-   app.debug = True
+   app.debug = False
    app.secret_key = 'somesecretkey'
    # Set the app configuration data 
    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///sitedata.sqlite'
@@ -47,10 +47,8 @@ def create_app():
    
    # Inbuilt function for handling 500 errors
    @app.errorhandler(500)
-   def server_error(e):
-    # Rollback the database for database safety in the event of a 500 error
-    db.session.rollback()
-    return render_template("500.html", error=e)
+   def internal_server_error(e):
+      return render_template('500.html', error=e), 500
 
    # Import main blueprints, handling the main views of the website
    from . import views
@@ -69,7 +67,8 @@ def create_app():
    app.register_blueprint(user_bp)
 
    # Import order blueprints, handling blueprints related to orders
-   from .orders import order_bp
+   from . orders import order_bp
    app.register_blueprint(order_bp)
    
    return app
+   
