@@ -2,14 +2,21 @@
 
 {% block content %}
 
-<div class="container-error mt-5">
-    <div class="row">
-         <div class="col-8">
-            <h1>Error 404</h1>
-            <p>Something went wrong! More info:</p>
-            <p>{{error}}</p>
-        </div>
-    </div>
+<div class="container-error d-flex flex-column justify-content-center align-items-center text-center"
+    style="min-height: 80vh";>
+    
+    <img
+        src="{{ url_for('static', filename='img/404_sad_pingu.gif')}}"
+        alt="Pingu Sorry GIF 404"
+        class="img-fluid mb-4"
+        style="max-width: 380px;">
+
+    <h1 class="fw-bold">Error 404!</h1>
+    <p>Something went wrong! More info:</p>
+    <p>{{error}}</p>
+    
+    <a href="{{ url_for('main.index') }}" class="btn btn-success mt-3 px-4 py-2">Return Home</a>
+                        
 </div>
 
 {% endblock %}

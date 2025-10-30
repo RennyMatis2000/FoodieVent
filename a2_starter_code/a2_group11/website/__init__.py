@@ -43,11 +43,13 @@ def create_app():
    # Inbuilt function for handling 404 errors
    @app.errorhandler(404) 
    def not_found(e): 
+      # Display error message for 404
       return render_template("404.html", error=e)
    
    # Inbuilt function for handling 500 errors
    @app.errorhandler(500)
    def internal_server_error(e):
+      # Display error message for 500
       return render_template('500.html', error=e), 500
 
    # Import main blueprints, handling the main views of the website
