@@ -5,6 +5,12 @@
 <div class="container-error mt-5">
     <div class="row">
          <div class="col-8">
+            <img
+            src="{{ url_for('static', filename='img/404_sad_pingu.gif')}}"
+            alt="Pingu Sorry GIF 404"
+            class="img-fluid"
+            style="max-width: 400px;"
+            >
             <h1>Error 404</h1>
             <p>Something went wrong! More info:</p>
             <p>{{error}}</p>
