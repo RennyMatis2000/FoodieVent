@@ -203,21 +203,19 @@ def live_status():
 
     # Ensure all events are selected and looped over
     for event in events:
-        # If event is cancelled
-        if event.status == EventStatus.CANCELLED:
-            # Event stays cancelled until end time is in the past, then turns to inactive
-            if now > event.end_time:
-                new_status = EventStatus.INACTIVE
-            else:
-                new_status = EventStatus.CANCELLED
+        # Event is inactive if it is in the past, and is cancelled if cancelled
+        if now > event.end_time:
+            new_status = EventStatus.INACTIVE
+        elif event.status == EventStatus.CANCELLED:
+            new_status = EventStatus.CANCELLED
         # If total_tickets of an event or 0 are equal to or less than 0, set status to soldout
         elif (event.total_tickets or 0) <= 0:
             new_status = EventStatus.SOLDOUT
         # If end_time is greater than the current time event is open
         elif now <= event.end_time:
             new_status = EventStatus.OPEN
-        # Otherwise if now is greater than end_time, event has ended already.
         else:
+            # Otherwise if now is greater than end_time, event has ended already.
             new_status = EventStatus.INACTIVE
 
         # If event status is not the new status set it to the new status
@@ -231,34 +229,29 @@ def live_status():
         # Event order is the order attached to the event variable 
         event_order = order.event
 
-        # If the event attached to the order is cancelled
-        if event_order.status == EventStatus.CANCELLED:
-            # Also set the ticket status to cancelled
-            new_ticketstatus = TicketStatus.CANCELLED
-        # If event attached to the order is inactive
-        elif event_order.status == EventStatus.INACTIVE:
-            # Also set the ticket status to inactive
+        # If event attached to the order is past now then it is inactive
+        if now > event_order.end_time:
             new_ticketstatus = TicketStatus.INACTIVE
         # Otherwise handle if ticket status has been cancelled
+        elif event_order.status == EventStatus.CANCELLED:
+            new_ticketstatus = TicketStatus.CANCELLED
         else:
-            # If ticket status is cancelled
+        # If ticket status is cancelled
             if order.ticket_status == TicketStatus.CANCELLED:
-                # If now is greater than the event.end_time attached to the order, set ticket status to inactive even if cancelled
-                if now > event_order.end_time:
-                    new_ticketstatus = TicketStatus.INACTIVE
-                # Otherwise ticket status is just cancelled if event is still active 
-                else:
-                    new_ticketstatus = TicketStatus.CANCELLED
-            # If end time of the event is in the future
+        # Otherwise ticket status is just cancelled if event is still active 
+                new_ticketstatus = TicketStatus.CANCELLED
             elif now <= event_order.end_time:
-                # Set ticket status to active
+        # If end time of the event is in the future
+        # Set ticket status to active
                 new_ticketstatus = TicketStatus.ACTIVE
             else:
-                # Otherwise set it to inactive
+        # Otherwise set it to inactive
                 new_ticketstatus = TicketStatus.INACTIVE
+
         # If ticket status is not the new ticket status, set it to the new one
         if order.ticket_status != new_ticketstatus:
             order.ticket_status = new_ticketstatus
 
     # Commit live changes to the database
     db.session.commit()
+
