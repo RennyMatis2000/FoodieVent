@@ -3,6 +3,8 @@ from flask import Flask, render_template
 from flask_bootstrap import Bootstrap5
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
+# Import path so database can be inside the website package folder
+from pathlib import Path
 
 # Create the database using SQLAlchemy
 db = SQLAlchemy()
@@ -17,8 +19,10 @@ def create_app():
     # As the website is in a production environment, debug is set to False
     app.debug = False
     app.secret_key = 'somesecretkey'
+    # Ensure database path is accurate inside the website package folder
+    db_path = (Path(__file__).parent / "website.sqlite").resolve()
     # Set the app configuration data
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///sitedata.sqlite'
+    app.config["SQLALCHEMY_DATABASE_URI"] = f"sqlite:///{db_path}"
     # Initialise db with flask app
     db.init_app(app)
 
