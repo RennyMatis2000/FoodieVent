@@ -1,15 +1,17 @@
 {% extends 'base.html' %}
-<!--This is extending the basic layout already in base.html -->
-{% from 'bootstrap5/form.html' import render_field %}
-<!--Ensures consistent bootstrap-->
+{# Use the shared layout (navbar, footer, etc.) #}
 
-{# === Full-bleed jumbotron header (matches booking/view pages) === #}
+{% from 'bootstrap5/form.html' import render_field %}
+{# Helper to render WTForms fields with Bootstrap styles #}
+
+{# Page header area with the big background image (same style as booking/view pages) #}
 {% block header %}
   <div class="p-5 creationjumbotronimage rounded-3">
     <div class="jumbotronback container-fluid py-5">
-      <!--Page title-->
+      {# Title shown on the banner #}
       <h1 class="display-5 fw-bold">Create an Event</h1>
-      <!--Text introducing the page-->
+
+      {# Short description under the title #}
       <p class="col-md-8 fs-4">
         At FoodieVent, it's not just an event. Share memories, bring people
         together. Enjoy food, drinks, and company. Start creating now.
@@ -19,23 +21,28 @@
 {% endblock %}
 
 {% block content %}
-  <!-- The container for event creation page -->
+  {# Main form section #}
   <div class="container-create pb-5">
-    <!-- Creating events form section  -->
     <div class="row mt-5">
-      <!--Centered viewing on medium and large screens-->
       <div class="col-12 col-md-10 col-lg-8 offset-md-2">
-        <!-- Rendering forms using Flask WTF and Bootstrap 5 styling-->
-        <form method="POST" action="{{ url_for('events.create') }}" enctype="multipart/form-data">
+
+        {# Create-event form #}
+        <form method="POST"
+              action="{{ url_for('events.create') }}"
+              enctype="multipart/form-data">
+
+          {# Render normal inputs only; skip cancel/reopen/submit #}
           {% for field in form if field.name not in ['cancel_event', 'reopen_event', 'submit'] %}
             {{ render_field(field) }}
           {% endfor %}
+
+          {# Submit button #}
           {{ render_field(form.submit, class="btn btn-success") }}
         </form>
       </div>
     </div>
 
-    <!-- Spacer above the footer so the form doesn’t touch it -->
+    {# Extra space so the form doesn’t touch the footer #}
     <div class="my-5"></div>
   </div>
 {% endblock %}

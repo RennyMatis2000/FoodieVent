@@ -1,16 +1,16 @@
 {% extends "base.html" %}
 {% from 'bootstrap5/form.html' import render_form, render_field %}
 
-{# Disable the base flash row so we can show it inside the hero #}
+{# Hide the default flash row in base so we can show flashes inside the hero banner #}
 {% block flashes %}{% endblock %}
 
 {% block content %}
 
-<!-- Event details page Jumbotron (no flash overlay inside) -->
+<!-- Hero (uses the event image as the background) -->
 <div class="p-5 detailjumbotronimage rounded-3 position-relative"
      style="background-image: url('{{ event.image }}');">
 
-  {# Flash overlay inside the hero #}
+  {# Flash messages over the hero image (success/info/warning/danger only) #}
   {%- with flashes = get_flashed_messages(with_categories=true, category_filter=['success','info','warning','danger']) -%}
     {%- if flashes -%}
       <div class="flash-hero">
@@ -34,7 +34,7 @@
 </div>
 
 <div class="container-flex">
-  <!-- Event title -->
+  <!-- Page heading (event title) -->
   <div class="col-12 col-md-6 offset-md-3">
     <div class="row">
       <div>
@@ -43,19 +43,19 @@
     </div>
   </div>
 
-  <!-- Event details -->
+  <!-- Details card -->
   <div class="row">
     <div class="col-12 col-md-6 offset-md-3">
       <div id="event-detail-card" class="card my-3">
 
         <img src="{{ event.image }}" alt="{{ event.title }}" class="card-img-top">
 
-        <!-- Top: badges + description -->
+        {# Top section: badges and description #}
         <div class="card-body event-card">
+          {# Badge colors by category/status #}
           {% set category_badge = {
             'FOOD':'bg-success','DRINK':'bg-primary','CULTURAL':'bg-warning','DIETARY':'bg-danger'
           }[event.category_type.name] %}
-
           {% set status_badge = {
             'OPEN':'bg-success','INACTIVE':'bg-secondary','SOLDOUT':'bg-warning','CANCELLED':'bg-danger'
           }[event.status.name] %}
@@ -72,10 +72,11 @@
           <h5 class="mt-2">{{ event.description }}</h5>
         </div>
 
+        {# Permissions for CTA buttons #}
         {% set can_book = (event.status.name == 'OPEN') %}
         {% set can_update = (current_user.id == event.creator_id) %}
 
-        <!-- Footer: actions -->
+        <!-- Footer actions (Book / Update / unavailable note) -->
         <div class="card-footer">
           <div class="row g-2">
             {% if can_book %}
@@ -105,7 +106,7 @@
           </div>
         </div>
 
-        <!-- CONTENT WRAPPER WITH PADDING -->
+        <!-- Padded content wrapper -->
         <div class="card-body pt-3 px-3">
 
           <!-- Date -->
@@ -169,7 +170,7 @@
             {% endif %}
           </div>
 
-          <!-- Book / Purchase modal (single) -->
+          {# Booking modal (opens from "Book Now") #}
           <div class="modal fade" id="bookTicketsModal" tabindex="-1"
                aria-labelledby="bookTicketsLabel" aria-hidden="true">
             <div class="modal-dialog">
@@ -220,7 +221,7 @@
             </div>
           </div>
 
-          <!-- Comment flashes (keep only comment categories here) -->
+          {# Comment flashes only (keep them out of the hero) #}
           {% with messages = get_flashed_messages(with_categories=true, category_filter=['comment', 'comment-error']) %}
             {% if messages %}
               {% for category, message in messages %}
@@ -254,9 +255,8 @@
             </div>
           </div>
 
-        </div>
-
-      </div>
+        </div> 
+      </div>  
     </div>
   </div>
 </div>

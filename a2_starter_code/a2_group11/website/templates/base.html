@@ -1,9 +1,9 @@
 <!doctype html>
 <html>
-
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+
     <!-- Bootstrap CSS -->
     <link
         href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
@@ -12,7 +12,7 @@
         crossorigin="anonymous"
     >
 
-    <!-- Custom css style sheet, with googles apis for the fonts Merriweather, Raleway and Roboto Mono -->
+    <!-- Google Fonts (Merriweather, Raleway, Roboto Mono) + site stylesheet -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
@@ -21,162 +21,168 @@
     >
     <link rel="stylesheet" href="{{ url_for('static', filename='style/style.css') }}">
 
-    <!-- Custom css bootstrap icons -->
+    <!-- Bootstrap Icons -->
     <link
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css"
     >
 
-    <!-- Title -->
+    {# Page <title>. Child templates can override this block. #}
     <title>{% block title %}FoodieVent Base{% endblock %}</title>
 </head>
 
 <body class="d-flex flex-column min-vh-100">
+  <main class="flex-grow-1">
 
-    <main class="flex-grow-1">
-        <!-- Header -->
-        <header>
+    <!-- Header (Navbar + optional hero/flash area) -->
+    <header>
 
-            <!-- Navbar -->
-            <nav class="navbar navbar-expand-lg navbar-light">
-                <div class="container-fluid">
-                    <a class="navbar-brand d-flex align-items-center gap-2" href="{{ url_for('main.index') }}">
-                        <img
-                            src="{{ url_for('static', filename='img/FoodieVentLogo.png') }}"
-                            alt="FoodieVent logo"
-                            class="brand-logo"
-                            width="34"
-                            height="34"
-                            loading="eager"
-                        />
-                        <span>FoodieVent</span>
-                    </a>
-                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-                        data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                        <span class="navbar-toggler-icon"></span>
-                    </button>
-                    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                        <ul class="navbar-nav ms-4 me-auto mb-2 mb-lg-0">
-                            {% if current_user.is_authenticated %}
-                            <li class="nav-item">
-                                <a class="nav-link" href="{{ url_for('events.create') }}">Create Event</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="{{ url_for('users.display_booking_history') }}">
-                                    Booking History
-                                </a>
-                            </li>
+      <!-- Navbar -->
+      <nav class="navbar navbar-expand-lg navbar-light">
+        <div class="container-fluid">
 
-                            <!-- Wrap toggle + dropdown in one li -->
-                            <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
-                                    data-bs-toggle="dropdown" aria-expanded="false">
-                                    Sign-out {{ current_user.first_name }} {{ current_user.surname }}
-                                </a>
-                                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                    <li><a class="dropdown-item" href="{{ url_for('auth.logout') }}">Logout</a></li>
-                                </ul>
-                            </li>
-                            {% else %}
-                            <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
-                                    data-bs-toggle="dropdown" aria-expanded="false">
-                                    Sign-in
-                                </a>
-                                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                    <li><a class="dropdown-item" href="{{ url_for('auth.register') }}">Register</a></li>
-                                    <li><a class="dropdown-item" href="{{ url_for('auth.login') }}">Login</a></li>
-                                </ul>
-                            </li>
-                            {% endif %}
-                        </ul>
-                        <form class="d-flex" role="search" method="get"
-                            action="{{ url_for('main.search') }}#page-header-event">
-                            <input class="form-control me-2 searchbar" type="search" name="search"
-                                placeholder="Search FoodieVent"
-                                aria-label="Search">
-                            <button class="btn btn-success" type="submit">Search</button>
-                        </form>
-                    </div>
-                </div>
-            </nav>
+          <!-- Brand -->
+          <a class="navbar-brand d-flex align-items-center gap-2" href="{{ url_for('main.index') }}">
+            <img
+              src="{{ url_for('static', filename='img/FoodieVentLogo.png') }}"
+              alt="FoodieVent logo"
+              class="brand-logo"
+              width="34"
+              height="34"
+              loading="eager"
+            />
+            <span>FoodieVent</span>
+          </a>
 
-            {# === overridable flash location === #}
-            {% block flashes %}
-            {%- with flashes = get_flashed_messages(with_categories=true, category_filter=['success','info','warning','danger']) -%}
-              {%- if flashes -%}
-              <div class="container-fluid py-2 flash-wrap">
-                {%- for category, message in flashes -%}
+          <!-- Mobile toggle -->
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                  data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                  aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+
+          <!-- Nav links + search -->
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav ms-4 me-auto mb-2 mb-lg-0">
+
+              {% if current_user.is_authenticated %}
+                <li class="nav-item">
+                  <a class="nav-link" href="{{ url_for('events.create') }}">Create Event</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="{{ url_for('users.display_booking_history') }}">Booking History</a>
+                </li>
+
+                <!-- User menu -->
+                <li class="nav-item dropdown">
+                  <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                     data-bs-toggle="dropdown" aria-expanded="false">
+                    Sign-out {{ current_user.first_name }} {{ current_user.surname }}
+                  </a>
+                  <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                    <li><a class="dropdown-item" href="{{ url_for('auth.logout') }}">Logout</a></li>
+                  </ul>
+                </li>
+
+              {% else %}
+                <!-- Auth menu (guest) -->
+                <li class="nav-item dropdown">
+                  <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                     data-bs-toggle="dropdown" aria-expanded="false">
+                    Sign-in
+                  </a>
+                  <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                    <li><a class="dropdown-item" href="{{ url_for('auth.register') }}">Register</a></li>
+                    <li><a class="dropdown-item" href="{{ url_for('auth.login') }}">Login</a></li>
+                  </ul>
+                </li>
+              {% endif %}
+            </ul>
+
+            <!-- Global search -->
+            <form class="d-flex" role="search" method="get"
+                  action="{{ url_for('main.search') }}#page-header-event">
+              <input class="form-control me-2 searchbar"
+                     type="search"
+                     name="search"
+                     placeholder="Search FoodieVent"
+                     aria-label="Search">
+              <button class="btn btn-success" type="submit">Search</button>
+            </form>
+          </div>
+        </div>
+      </nav>
+
+      {# === Flash area (default location). Child templates may override `flashes` to relocate flashes (e.g., inside a hero). #}
+      {% block flashes %}
+        {%- with flashes = get_flashed_messages(with_categories=true, category_filter=['success','info','warning','danger']) -%}
+          {%- if flashes -%}
+            <div class="container-fluid py-2 flash-wrap">
+              {%- for category, message in flashes -%}
                 <div class="alert alert-{{ 'warning' if not category else category }} alert-dismissible fade show mb-0" role="alert">
                   {{ message }}
                   <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
-                {%- endfor -%}
-              </div>
-              {%- endif -%}
-            {%- endwith -%}
-            {% endblock %}
-            {# === end overridable flash location === #}
-
-            {% block header %}
-            {% endblock %}
-
-        </header>
-
-        {% block content %}
-        {% endblock %}
-
-    </main>
-
-    <footer class="foodievent-footer mt-auto py-0">
-        <div class="footer-inner py-3">
-            <div class="container-footer">
-                <ul class="nav justify-content-center border-bottom pb-3 mb-3">
-                    {% if current_user.is_authenticated %}
-                    <li class="nav-item">
-                        <a href="{{ url_for('main.index') }}" class="nav-link px-2 text-body-secondary">Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="{{ url_for('main.index') }}#container-search"
-                            class="nav-link px-2 text-body-secondary">
-                            Search</a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="{{ url_for('users.display_booking_history') }}"
-                            class="nav-link px-2 text-body-secondary">Booking</a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="{{ url_for('auth.logout') }}" class="nav-link px-2 text-body-secondary">Logout</a>
-                    </li>
-                    {% else %}
-                    <li class="nav-item">
-                        <a href="{{ url_for('main.index') }}" class="nav-link px-2 text-body-secondary">Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="{{ url_for('main.index') }}#container-search"
-                            class="nav-link px-2 text-body-secondary">
-                            Search</a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="{{ url_for('auth.register') }}" class="nav-link px-2 text-body-secondary">Register</a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="{{ url_for('auth.login') }}" class="nav-link px-2 text-body-secondary">Login</a>
-                    </li>
-                    {% endif %}
-                </ul>
-                <p class="nav2 text-center text-body-secondary mb-0">© 2025 FoodieVent, Inc</p>
+              {%- endfor -%}
             </div>
-        </div>
-    </footer>
+          {%- endif -%}
+        {%- endwith -%}
+      {% endblock %}
+      {# === end flash area === #}
 
-    <!-- Bootstrap js end of page -->
-    <script
-        src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
-        crossorigin="anonymous"
-    ></script>
+      {# Optional page-level header/hero. Child templates usually fill this with a jumbotron. #}
+      {% block header %}{% endblock %}
+
+    </header>
+
+    {# Main page content inserted by child templates. #}
+    {% block content %}{% endblock %}
+
+  </main>
+
+  <!-- Footer (sticky at bottom via flex) -->
+  <footer class="foodievent-footer mt-auto py-0">
+    <div class="footer-inner py-3">
+      <div class="container-footer">
+        <ul class="nav justify-content-center border-bottom pb-3 mb-3">
+          {% if current_user.is_authenticated %}
+            <li class="nav-item">
+              <a href="{{ url_for('main.index') }}" class="nav-link px-2 text-body-secondary">Home</a>
+            </li>
+            <li class="nav-item">
+              <a href="{{ url_for('main.index') }}#container-search" class="nav-link px-2 text-body-secondary">Search</a>
+            </li>
+            <li class="nav-item">
+              <a href="{{ url_for('users.display_booking_history') }}" class="nav-link px-2 text-body-secondary">Booking</a>
+            </li>
+            <li class="nav-item">
+              <a href="{{ url_for('auth.logout') }}" class="nav-link px-2 text-body-secondary">Logout</a>
+            </li>
+          {% else %}
+            <li class="nav-item">
+              <a href="{{ url_for('main.index') }}" class="nav-link px-2 text-body-secondary">Home</a>
+            </li>
+            <li class="nav-item">
+              <a href="{{ url_for('main.index') }}#container-search" class="nav-link px-2 text-body-secondary">Search</a>
+            </li>
+            <li class="nav-item">
+              <a href="{{ url_for('auth.register') }}" class="nav-link px-2 text-body-secondary">Register</a>
+            </li>
+            <li class="nav-item">
+              <a href="{{ url_for('auth.login') }}" class="nav-link px-2 text-body-secondary">Login</a>
+            </li>
+          {% endif %}
+        </ul>
+        <p class="nav2 text-center text-body-secondary mb-0">© 2025 FoodieVent, Inc</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Bootstrap JS bundle -->
+  <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+      crossorigin="anonymous"
+  ></script>
 </body>
-
 </html>

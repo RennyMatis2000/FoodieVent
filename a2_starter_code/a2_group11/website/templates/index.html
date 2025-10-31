@@ -1,81 +1,101 @@
 {% extends "base.html" %}
 {% block title %}FoodieVent Home Page{% endblock %}
 
-{# 1) Disable the default flash area from base.html #}
+{# Turn off the base flash bar; we’ll render flashes inside the hero instead #}
 {% block flashes %}{% endblock %}
 
 {% block header %}
-<!-- Hero with background carousel -->
+<!-- Hero carousel (with background images) -->
 <div id="heroCarousel" class="carousel slide mb-1 overflow-hidden position-relative"
      data-bs-ride="carousel" data-bs-interval="5000">
 
-  {# 2) Flash overlay ON the hero #}
+  {# Flash messages layered over the hero #}
   {% with flashes = get_flashed_messages(with_categories=true, category_filter=['success','info','warning','danger']) %}
-  {% if flashes %}
-    <div class="flash-hero">
-      {% for category, message in flashes %}
-        <div class="alert alert-{{ 'warning' if not category else category }} alert-dismissible fade show shadow mb-2" role="alert">
-          {{ message }}
-          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-      {% endfor %}
-    </div>
-  {% endif %}
+    {% if flashes %}
+      <div class="flash-hero">
+        {% for category, message in flashes %}
+          <div class="alert alert-{{ 'warning' if not category else category }} alert-dismissible fade show shadow mb-2" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
   {% endwith %}
 
   <div class="carousel-inner">
 
+    <!-- Slide 1 -->
     <div class="carousel-item active">
-      <div class="p-5 homejumbotronimage" style="background-image:url('static/img/Festival.jpg'); background-position:center; background-size:cover;">
+      <div class="p-5 homejumbotronimage"
+           style="background-image:url('static/img/Festival.jpg'); background-position:center; background-size:cover;">
         <div class="container-fluid py-5">
           <h1 class="display-5 fw-bold">FoodieVent</h1>
+
+          {# Show different copy/CTAs for logged-in vs guest users #}
           {% if current_user.is_authenticated %}
-          <p class="col-md-8 fs-4">
-            Welcome back, {{ current_user.first_name }} {{ current_user.surname }}.
-            Browse your booking history for upcoming Food and Drink events, or spread the fun by hosting a Food and Drink event.
-          </p>
-          <a href="{{ url_for('users.display_booking_history') }}" class="btn btn-success btn-lg">Booking History</a>
-          <a href="{{ url_for('events.create') }}" class="btn btn-success btn-lg">Create Event</a>
+            <p class="col-md-8 fs-4">
+              Welcome back, {{ current_user.first_name }} {{ current_user.surname }}.
+              Browse your booking history or host a new event.
+            </p>
+            <a href="{{ url_for('users.display_booking_history') }}" class="btn btn-success btn-lg">Booking History</a>
+            <a href="{{ url_for('events.create') }}" class="btn btn-success btn-lg">Create Event</a>
           {% else %}
-          <p class="col-md-8 fs-4">FoodieVent is a Food and Drinks Festival Event Manager. Feel free to browse, or join in on the fun by participating.</p>
-          <a href="{{ url_for('auth.register') }}" class="btn btn-success btn-lg">Register Now</a>
-          <a href="{{ url_for('auth.login') }}" class="btn btn-success btn-lg">Login</a>
+            <p class="col-md-8 fs-4">
+              FoodieVent is a Food & Drinks Festival Event Manager. Join and participate in upcoming events.
+            </p>
+            <a href="{{ url_for('auth.register') }}" class="btn btn-success btn-lg">Register Now</a>
+            <a href="{{ url_for('auth.login') }}" class="btn btn-success btn-lg">Login</a>
           {% endif %}
         </div>
       </div>
     </div>
 
+    <!-- Slide 2 -->
     <div class="carousel-item">
-      <div class="p-5 homejumbotronimage" style="background-image:url('static/img/Friends.jpg'); background-position:center; background-size:cover;">
+      <div class="p-5 homejumbotronimage"
+           style="background-image:url('static/img/Friends.jpg'); background-position:center; background-size:cover;">
         <div class="container-fluid py-5">
           <h1 class="display-5 fw-bold">FoodieVent</h1>
+
           {% if current_user.is_authenticated %}
-          <p class="col-md-8 fs-4">Welcome back, {{ current_user.first_name }} {{ current_user.surname }}.
-            Browse your booking history for upcoming Food and Drink events, or spread the fun by hosting a Food and Drink event.</p>
-          <a href="{{ url_for('users.display_booking_history') }}" class="btn btn-success btn-lg">Booking History</a>
-          <a href="{{ url_for('events.create') }}" class="btn btn-success btn-lg">Create Event</a>
+            <p class="col-md-8 fs-4">
+              Welcome back, {{ current_user.first_name }} {{ current_user.surname }}.
+              Check your bookings or host a new event.
+            </p>
+            <a href="{{ url_for('users.display_booking_history') }}" class="btn btn-success btn-lg">Booking History</a>
+            <a href="{{ url_for('events.create') }}" class="btn btn-success btn-lg">Create Event</a>
           {% else %}
-          <p class="col-md-8 fs-4">From brunch pop-ups to cultural feasts, discover experiences that turn time with friends into lasting memories.</p>
-          <a href="{{ url_for('auth.register') }}" class="btn btn-success btn-lg">Register Now</a>
-          <a href="{{ url_for('auth.login') }}" class="btn btn-success btn-lg">Login</a>
+            <p class="col-md-8 fs-4">
+              From brunch pop-ups to cultural feasts, discover experiences with friends.
+            </p>
+            <a href="{{ url_for('auth.register') }}" class="btn btn-success btn-lg">Register Now</a>
+            <a href="{{ url_for('auth.login') }}" class="btn btn-success btn-lg">Login</a>
           {% endif %}
         </div>
       </div>
     </div>
 
+    <!-- Slide 3 -->
     <div class="carousel-item">
-      <div class="p-5 homejumbotronimage" style="background-image:url('static/img/Food.jpg'); background-position:center; background-size:cover;">
+      <div class="p-5 homejumbotronimage"
+           style="background-image:url('static/img/Food.jpg'); background-position:center; background-size:cover;">
         <div class="container-fluid py-5">
           <h1 class="display-5 fw-bold">FoodieVent</h1>
+
           {% if current_user.is_authenticated %}
-          <p class="col-md-8 fs-4">Welcome back, {{ current_user.first_name }} {{ current_user.surname }}.
-            Browse your booking history for upcoming Food and Drink events, or spread the fun by hosting a Food and Drink event.</p>
-          <a href="{{ url_for('users.display_booking_history') }}" class="btn btn-success btn-lg">Booking History</a>
-          <a href="{{ url_for('events.create') }}" class="btn btn-success btn-lg">Create Event</a>
+            <p class="col-md-8 fs-4">
+              Welcome back, {{ current_user.first_name }} {{ current_user.surname }}.
+              Review bookings or launch an event.
+            </p>
+            <a href="{{ url_for('users.display_booking_history') }}" class="btn btn-success btn-lg">Booking History</a>
+            <a href="{{ url_for('events.create') }}" class="btn btn-success btn-lg">Create Event</a>
           {% else %}
-          <p class="col-md-8 fs-4">Share your passion for food with FoodieVent and turn every dish into an experience.</p>
-          <a href="{{ url_for('auth.register') }}" class="btn btn-success btn-lg">Register Now</a>
-          <a href="{{ url_for('auth.login') }}" class="btn btn-success btn-lg">Login</a>
+            <p class="col-md-8 fs-4">
+              Share your passion for food and turn every dish into an experience.
+            </p>
+            <a href="{{ url_for('auth.register') }}" class="btn btn-success btn-lg">Register Now</a>
+            <a href="{{ url_for('auth.login') }}" class="btn btn-success btn-lg">Login</a>
           {% endif %}
         </div>
       </div>
@@ -83,6 +103,7 @@
 
   </div>
 
+  <!-- Carousel controls -->
   <button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev" aria-label="Previous">
     <span class="carousel-control-prev-icon" aria-hidden="true"></span>
   </button>
@@ -95,27 +116,37 @@
 {% block content %}
 <div class="container-flex">
 
-  <!-- Search Jumbotron -->
+  <!-- Search card -->
   <div id="container-search" class="container">
     <div class="row justify-content-center mt-5 pb-4">
       <div class="col-md-12">
         <div class="card-search shadow p-5 mb-3">
           <h1 class="text-center mb-3">Find the event that is just right for you.</h1>
+
+          {# Global keyword search; anchors back to this section after submit #}
           <form action="{{ url_for('main.search') }}#container-search" method="get" role="search">
-            <h2 class="text-center mb-3">Don't skip an opportunity! Search FoodieVent.</h2>
+            <h2 class="text-center mb-3">Don't miss out — search FoodieVent.</h2>
             <div class="input-group input-group-lg">
-              <input type="search" name="search" id="SearchForm" class="form-control" placeholder="Search FoodieVent" aria-label="Search FoodieVent">
+              <input type="search" name="search" id="SearchForm" class="form-control"
+                     placeholder="Search FoodieVent" aria-label="Search FoodieVent">
               <button type="submit" class="btn btn-success">Search</button>
             </div>
           </form>
+
           <hr>
+
+          <!-- Category filter dropdown -->
           <div class="row justify-content-center">
             <div class="col-md-12">
-              <h1 class="text-center mb-3">Did you want a specific type of event?</h1>
-              <h2 class="text-center mb-3">Browse all upcoming food and drink events by filtering their category.</h2>
+              <h1 class="text-center mb-3">Looking for a specific type?</h1>
+              <h2 class="text-center mb-3">Filter upcoming events by category.</h2>
+
               <div class="d-flex flex-column align-items-center gap-3">
                 <div class="dropdown">
-                  <button class="btn btn-success dropdown-toggle" type="button" id="categoryDropdown" data-bs-toggle="dropdown" aria-expanded="false">Browse by Category</button>
+                  <button class="btn btn-success dropdown-toggle" type="button" id="categoryDropdown"
+                          data-bs-toggle="dropdown" aria-expanded="false">
+                    Browse by Category
+                  </button>
                   <ul class="dropdown-menu" aria-labelledby="categoryDropdown">
                     <li><a class="dropdown-item" href="{{ url_for('main.index') }}#page-header-event">All</a></li>
                     <li><a class="dropdown-item" href="{{ url_for('main.food') }}#page-header-event">Food</a></li>
@@ -125,51 +156,70 @@
                   </ul>
                 </div>
               </div>
+
             </div>
           </div>
+
         </div>
       </div>
     </div>
   </div>
 
+  <!-- Section header for the event grid -->
   <h1 id="page-header-event" class="page-header">All recent upcoming {{ category }} events</h1>
 
-  {# Inline flashes area left unchanged #}
+  {# Inline, page-local info messages (separate from hero flashes) #}
   {% with messages = get_flashed_messages(with_categories=true, category_filter=['inline']) %}
-  {% if messages %}
-    {% for _, message in messages %}
-      <div class="alert alert-info alert-dismissible fade show" role="alert">
-        {{ message }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-      </div>
-    {% endfor %}
-  {% endif %}
+    {% if messages %}
+      {% for _, message in messages %}
+        <div class="alert alert-info alert-dismissible fade show" role="alert">
+          {{ message }}
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+      {% endfor %}
+    {% endif %}
   {% endwith %}
 
+  <!-- Responsive event cards grid -->
   <div class="row">
     {% for event in events %}
-    <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-2">
-      <div class="card hover-lift ripple w-100 h-300" tabindex="0">
-        <img class="card-img-top" src="{{ event.image }}" alt="event picture">
-        <div class="card-body">
-          <h5 class="card-title clamp-2">{{ event.title }}</h5>
-          <div class="d-flex align-items-center gap-2 flex-wrap mb-2">
-            {% set category_badge = {'FOOD':'bg-success','DRINK':'bg-primary','CULTURAL':'bg-warning','DIETARY':'bg-danger'}[event.category_type.name] %}
-            <span class="badge {{ category_badge }}">Event Category: {{ event.category_type.name }}</span>
-            {% set status_badge = {'OPEN':'bg-success','INACTIVE':'bg-secondary','SOLDOUT':'bg-warning','CANCELLED':'bg-danger'}[event.status.name] %}
-            <span class="badge {{ status_badge }}">Event Status: {{ event.status.name }}</span>
-            <span class="badge bg-info"><span class="chip-emoji" aria-hidden="true">🎟️</span> Tickets Remaining: {{ event.total_tickets }}</span>
-            <span class="badge bg-info"><span class="chip-emoji" aria-hidden="true">🕒</span> Start Time: {{ event.start_time.strftime('%Y-%m-%d %H:%M') }}</span>
-            <span class="badge bg-info"><span class="chip-emoji" aria-hidden="true">🕒</span> End Time: {{ event.end_time.strftime('%Y-%m-%d %H:%M') }}</span>
+      <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-2">
+        <div class="card hover-lift w-100 h-300" tabindex="0">
+
+          <!-- Event image -->
+          <img class="card-img-top" src="{{ event.image }}" alt="event picture">
+
+          <div class="card-body">
+            <h5 class="card-title clamp-2">{{ event.title }}</h5>
+
+            {# Category/status badge colors based on enum name #}
+            {% set category_badge = {
+              'FOOD':'bg-success','DRINK':'bg-primary','CULTURAL':'bg-warning','DIETARY':'bg-danger'
+            }[event.category_type.name] %}
+            {% set status_badge = {
+              'OPEN':'bg-success','INACTIVE':'bg-secondary','SOLDOUT':'bg-warning','CANCELLED':'bg-danger'
+            }[event.status.name] %}
+
+            <div class="d-flex align-items-center gap-2 flex-wrap mb-2">
+              <span class="badge {{ category_badge }}">Event Category: {{ event.category_type.name }}</span>
+              <span class="badge {{ status_badge }}">Event Status: {{ event.status.name }}</span>
+              <span class="badge bg-info"><span class="chip-emoji" aria-hidden="true">🎟️</span> Tickets Remaining: {{ event.total_tickets }}</span>
+              <span class="badge bg-info"><span class="chip-emoji" aria-hidden="true">🕒</span> Start Time: {{ event.start_time.strftime('%Y-%m-%d %H:%M') }}</span>
+              <span class="badge bg-info"><span class="chip-emoji" aria-hidden="true">🕒</span> End Time: {{ event.end_time.strftime('%Y-%m-%d %H:%M') }}</span>
+            </div>
+
+            <hr>
+
+            <!-- Short description -->
+            <p class="card-text clamp-5">{{ event.description }}</p>
           </div>
-          <hr>
-          <p class="card-text clamp-5">{{ event.description }}</p>
-        </div>
-        <div class="card-footer">
-          <a href="{{ url_for('events.show', event_id=event.id) }}" class="btn btn-success">View Details</a>
+
+          <!-- Details button -->
+          <div class="card-footer">
+            <a href="{{ url_for('events.show', event_id=event.id) }}" class="btn btn-success view-details">View Details</a>
+          </div>
         </div>
       </div>
-    </div>
     {% endfor %}
   </div>
 

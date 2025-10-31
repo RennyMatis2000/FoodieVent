@@ -8,13 +8,16 @@ from flask_login import LoginManager
 db = SQLAlchemy()
 
 # Create a function that creates a web application, a web server will run on this application
+
+
 def create_app():
-  
-    app = Flask(__name__)  # This is the name of the module/package that is calling this app
+
+    # This is the name of the module/package that is calling this app
+    app = Flask(__name__)
     # As the website is in a production environment, debug is set to False
     app.debug = False
     app.secret_key = 'somesecretkey'
-    # Set the app configuration data 
+    # Set the app configuration data
     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///sitedata.sqlite'
     # Initialise db with flask app
     db.init_app(app)
@@ -53,7 +56,7 @@ def create_app():
     app.register_blueprint(events.event_bp)
 
     # Import user blueprints, handling views only a logged in user can see
-    from . users import user_bp
+    from .users import user_bp
     app.register_blueprint(user_bp)
 
     # Import order blueprints, handling blueprints related to orders

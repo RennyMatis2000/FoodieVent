@@ -1,42 +1,31 @@
-/* body css */
+/* ================= Base background + simple utility blocks ================= */
 body {
   background-color: #f5f2ec;
 }
-
-.event-card {
-  background-color: rgb(233, 245, 227);
-}
-
+.event-card { background-color: rgb(233, 245, 227); }
 .comment-border {
   background-color: #f5f2ec;
   box-shadow: 0 0 0 2px #198754;
   border-radius: .5rem;
 }
 
-/* home page jumbotron css */
+/* ================= Home page hero (carousel slide styling) ================= */
 .homejumbotronimage {
   background-position: center;
   background-size: cover;
   background-repeat: no-repeat;
-
   color: #ffffff;
   font-family: 'Merriweather';
-
-  /* make the hero tall */
   min-height: 40vh;
   display: flex;
   align-items: center;
   position: relative;
-
-  /* readable text over images */
   text-shadow:
     -1px -1px 0 #000,
      1px -1px 0 #000,
     -1px  1px 0 #000,
      1px  1px 0 #000;
 }
-
-/* optional: a soft dark overlay for readability */
 .homejumbotronimage::before {
   content: "";
   position: absolute;
@@ -44,101 +33,88 @@ body {
   background: rgba(0,0,0,.25);
 }
 .homejumbotronimage > .container-fluid {
-  position: relative; /* sit above the overlay */
+  position: relative;
   z-index: 1;
 }
-
-/* a little taller on large screens */
 @media (min-width: 992px) {
   .homejumbotronimage { min-height: 40vh; }
 }
 
-/* hero carousel chevrons */
+/* ================= Carousel controls (prev/next arrows) ==================== */
 #heroCarousel .carousel-control-prev,
 #heroCarousel .carousel-control-next {
   width: 4rem;
   z-index: 3;
   background: transparent !important;
 }
-
 #heroCarousel .carousel-control-prev-icon,
 #heroCarousel .carousel-control-next-icon {
   width: 2.4rem;
   height: 2.4rem;
-  opacity: .50;                              
+  opacity: .50;
   filter: drop-shadow(0 0 6px rgba(0,0,0,.55));
   transition: opacity .2s ease, transform .2s ease, filter .2s ease;
 }
-
 #heroCarousel .carousel-control-prev:hover .carousel-control-prev-icon,
 #heroCarousel .carousel-control-next:hover .carousel-control-next-icon,
 #heroCarousel .carousel-control-prev:focus .carousel-control-prev-icon,
 #heroCarousel .carousel-control-next:focus .carousel-control-next-icon {
-  opacity: .9;                           
+  opacity: .9;
   filter: drop-shadow(0 0 10px rgba(0,0,0,.85));
   transform: scale(1.02);
 }
-
-/* make hero carousel controls pop a bit */
 #heroCarousel .carousel-control-prev-icon,
 #heroCarousel .carousel-control-next-icon {
   filter: drop-shadow(0 0 6px rgba(0,0,0,.6));
 }
 
+/* ================= Event detail card: top image crop ======================= */
 #event-detail-card .card-img-top {
   width: 100%;
-  aspect-ratio: 16 / 9;   
-  height: auto;           
-  object-fit: cover;      
+  aspect-ratio: 16 / 9;
+  height: auto;
+  object-fit: cover;
   display: block;
-  background-color: transparent; 
+  background-color: transparent;
 }
 
-/* event creation and update page jumbotron css */
+/* ============== Create/Update pages: hero background + overlay ============= */
 .creationjumbotronimage {
   background: url("/static/img/EventCreationJumbo.jpg") center center no-repeat;
   background-size: cover;
   color: white;
   font-family: 'Merriweather';
-  /* black outline on white font for maximum readability over multiple colours */
   text-shadow:
     -1px -1px 0 #000,
     1px -1px 0 #000,
     -1px 1px 0 #000,
     1px 1px 0 #000;
-  position: relative;         
-  display: flex;              
+  position: relative;
+  display: flex;
   align-items: center;
-  min-height: 20vh;         
+  min-height: 20vh;
 }
-
 .creationjumbotronimage::before {
   content: "";
   position: absolute;
   inset: 0;
-  background: rgba(0,0,0,.10); 
+  background: rgba(0,0,0,.10);
 }
-
 .creationjumbotronimage > .jumbotronback {
-  position: relative;        
+  position: relative;
   z-index: 1;
 }
+#event-detail-card .card-footer { background-color: rgb(233, 245, 227); }
 
-#event-detail-card .card-footer {
-  background-color: rgb(233, 245, 227);
-}
-
-/* event details page jumbotron css */
+/* ================= Event details page hero (image-backed) ================== */
 .detailjumbotronimage {
-  position: relative;                 /* enable overlay */
+  position: relative;
   display: flex;
   align-items: center;
   min-height: 20vh;
-
   background-position: center;
   background-size: cover;
   background-repeat: no-repeat;
-
   color: #fff;
   font-family: 'Merriweather';
   text-shadow:
@@ -151,25 +127,22 @@ body {
   content: "";
   position: absolute;
   inset: 0;
-  background: rgba(0,0,0,.10);        /* softer overlay so flash isn’t dark */
-  z-index: 0;                         /* keep overlay under everything else */
+  background: rgba(0,0,0,.10);
+  z-index: 0;
 }
 .detailjumbotronimage > .container-fluid {
-  position: relative;                 /* text above overlay */
+  position: relative;
   z-index: 1;
 }
 
-
-/* booking page jumbotron css */
+/* ================= Booking history page hero (taller) ====================== */
 .bookingjumbotronimage {
-  position: relative;                 /* enable overlay */
+  position: relative;
   display: flex;
   align-items: center;
-  min-height: 20vh;
-
+  min-height: 41.8vh;
   background: url("../img/BookingJumbotronImage.jpg") center center no-repeat;
   background-size: cover;
-
   color: #fff;
   font-family: 'Merriweather';
   text-shadow:
@@ -178,63 +151,35 @@ body {
     -1px  1px 0 #000,
      1px  1px 0 #000;
 }
-.bookingjumbotronimage::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: rgba(0,0,0,.10);        /* softer overlay so flash isn’t dark */
-  z-index: 0;
-  min-height: 20vh;
-}
 .bookingjumbotronimage > .jumbotronback {
-  position: relative;                 /* text above overlay */
+  position: relative;
   z-index: 1;
   min-height: 20vh;
 }
 
-
-
-/* carousel image css */
+/* ============== Generic image helpers (carousel + caps) ==================== */
 .carousel-inner img {
   height: 300px;
   object-fit: cover;
   width: 100%;
 }
-
-/* event image css */
 .event-image-cap {
-  /* event image in event details page is capped, as without this pixel cap the image can be extremely large and proportionately makes the page look smaller */
   max-width: 500px;
   max-height: 500px;
   display: block;
   margin: 1rem auto;
 }
-
-/* Ensure images in the cards remain at the top with a fixed size */
 .card-img-top {
   width: 100%;
   height: 200px;
   object-fit: cover;
 }
 
-/* css for title of pages to look large and uniform, and align center */
-.page-header {
-  background-color: rgb(233, 245, 227);
-  box-shadow: 0 0 0 2px #556B2F;
-  font-size: 3.5rem;
-  color: #556B2F;
-  text-align: center;
-  margin-top: 1rem;
-  margin-bottom: 1rem;
-  font-family: 'Merriweather';
-  font-weight: bold;
-}
-
-
+/* ================= Page + category headers (big green bars) ================= */
+.page-header,
 .category-header {
   background-color: rgb(233, 245, 227);
   box-shadow: 0 0 0 2px #556B2F;
-  font-size: 3.5rem;
   color: #556B2F;
   text-align: center;
   margin-top: 1rem;
@@ -242,30 +187,29 @@ body {
   font-family: 'Merriweather';
   font-weight: bold;
 }
+.page-header { font-size: 3.5rem; }
+.category-header { font-size: 3.5rem; }
 
+/* ================= Navbar brand (logo + name alignment) ==================== */
 .navbar .navbar-brand{
   display: flex;
   align-items: center;
   gap: .5rem;
-  height: 56px;           
+  height: 56px;
   line-height: 1;
-  margin-top: 1rem;       
-  margin-bottom: 1rem;     
 }
-
 .navbar .navbar-brand .brand-logo{
-  height: 56px;        
+  height: 56px;
   width: auto;
-  transform: scale(1.25);  
+  transform: scale(1.25);
   transform-origin: left center;
 }
-
 .navbar .navbar-brand span{
   font-family: 'Merriweather', serif;
-  font-weight: 700;      
+  font-weight: 700;
 }
 
-/* css for food event categories to look medium size and uniform, and align center*/
+/* ================= Category header (smaller variant override) ============== */
 .category-header {
   font-size: 2rem;
   color: #556B2F;
@@ -276,7 +220,7 @@ body {
   font-weight: bold;
 }
 
-/* css for titles of each event details row section to look medium sized and uniform, and align left */
+/* ================= Event detail section titles ============================ */
 .detail-header {
   font-weight: bold;
   font-size: 2rem;
@@ -287,8 +231,7 @@ body {
   font-family: 'Roboto Mono';
 }
 
-
-/* change font of descriptions */
+/* ================= Descriptive paragraph text ============================= */
 .event-descriptive {
   font-family: 'Raleway';
   color: #000000;
@@ -298,40 +241,26 @@ body {
   padding-right: 2rem;
 }
 
-/* change navbar visually */
+/* ================= Navbar theme + search font ============================== */
 .navbar {
   font-family: 'Roboto Mono';
   background-color: rgb(198, 221, 187);
 }
+.searchbar { font-family: 'Roboto Mono'; }
 
-/* change searchbar placeholder text font */
-.searchbar {
-  font-family: 'Roboto Mono';
-}
-
-/* change card title font for visibility */
+/* ================= Card typography & emphasis ============================== */
 .card-title {
   font-family: 'Merriweather';
   color: #008b35;
   font-weight: bold;
 }
-
-/* change search feature text */
-.text-center {
+.text-center,
+.search-text {
   font-family: 'Merriweather';
   color: #008b35;
   font-weight: bold;
 }
-
-.search-text {
-  font-family: 'Merriweather';
-  color: #008b35;
-}
-
-.container-footer {
-  background-color: rgb(217, 240, 206);
-}
-
+.container-footer { background-color: rgb(217, 240, 206); }
 .container-error {
   font-family: 'Merriweather';
   font-weight: bold;
@@ -341,52 +270,20 @@ body {
   display: flex;
   justify-content: center;
 }
+.card-body { font-family: 'Raleway'; color: #008b35; }
+.card-text-info { font-family: 'Merriweather'; color: #008b35; }
 
-/* change card font for the descriptions */
-.card-body {
-  font-family: 'Raleway';
-  color: #008b35;
-}
+/* ================= Forms (fonts + helper text) ============================ */
+form { font-family: 'Raleway'; font-weight: bold; color: #556B2F; }
+.form-text { color: #556B2F; }
 
-/* change card text font and colour for booking ID and booked on time */
-.card-text-info {
-  font-family: 'Merriweather';
-  color: #008b35;
-}
+/* ================= Status/intent accents (labels) ========================= */
+.cancel-event { color: #dc3545 !important; font-weight: 600; }
+.reopen-event { color: var(--bs-success) !important; font-weight: 600; }
+.warning-text { color: #dc3545; font-weight: 600; }
 
-/* change form font */
-form {
-  font-family: 'Raleway';
-  font-weight: bold;
-  color: #556B2F;
-}
-
-/* change form text font */
-.form-text {
-  color: #556B2F;
-}
-
-.cancel-event {
-  color: #dc3545 !important;
-  font-weight: 600;
-}
-
-.reopen-event {
-  color: var(--bs-success) !important;
-  font-weight: 600;
-}
-
-.warning-text {
-  color: #dc3545;
-  font-weight: 600;
-}
-
-/* change font of the comment section */
-.list-group-item {
-  font-family: 'Roboto Mono';
-}
-
-/* change footer visually */
+/* ================= Lists + footer styling ================================= */
+.list-group-item { font-family: 'Roboto Mono'; }
 footer {
   display: block;
   width: 100%;
@@ -397,6 +294,7 @@ footer {
   font-weight: bold;
 }
 
+/* ================= Text clamping utilities ================================ */
 .clamp-5 {
   display: -webkit-box;
   -webkit-box-orient: vertical;
@@ -407,63 +305,39 @@ footer {
   white-space: normal;
   word-break: break-word;
 }
-
 .clamp-2 {
   display: -webkit-box;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
   overflow: hidden;
-  line-height: 1.25rem;                 
-  min-height: calc(1.25rem * 2);        
-  overflow-wrap: anywhere;              
+  line-height: 1.25rem;
+  min-height: calc(1.25rem * 2);
+  overflow-wrap: anywhere;
 }
 
-/* change font and colour of all modal popups */
-.modal-content {
-  font-family: 'Roboto Mono';
-  color: #556B2F;
+/* ================= Modals + buttons typography ============================ */
+.modal-content { font-family: 'Roboto Mono'; color: #556B2F; }
+.btn-success { font-family: 'Roboto Mono'; }
+.btn-danger  { font-family: 'Roboto Mono'; }
+
+/* ================= View Details button (base) ============================== */
+.btn-success.view-details {
+  position: relative; 
+  z-index: 1;
+  transition: transform .22s cubic-bezier(.22,.61,.36,1), box-shadow .22s ease, filter .22s ease;
+  box-shadow: 0 6px 14px rgba(0,0,0,.10);
 }
 
-/* change all buttons to display Roboto Mono font */
-.btn-success {
-  font-family: 'Roboto Mono';
-}
+/* ================= Footer bar + search card colours ======================= */
+.foodievent-footer { background-color: rgb(211, 231, 201); font-family: 'Merriweather'; }
+.card-search { background-color: rgb(211, 231, 201); }
 
-/* change all buttons to display Roboto Mono font */
-.btn-danger {
-  font-family: 'Roboto Mono';
-}
+/* ================= Container padding guards (prevent edge bleed) ========== */
+.container-flex { padding-left: 0.75rem; padding-right: 0.75rem; }
+.container-footer .border-bottom { padding-left: 0.75rem; padding-right: 0.75rem; }
+.container-fluid { padding-left: 0.75rem; padding-right: 0.75rem; }
 
-
-/* ensure visually there is a separation from the box of the footer bar, and the footer of the entire webpage */
-.foodievent-footer {
-  background-color: rgb(211, 231, 201);
-  font-family: 'Merriweather';
-}
-
-.card-search {
-  background-color: rgb(211, 231, 201);
-}
-
-/* offset container-flex expanding offscreen through use of padding */
-.container-flex {
-  padding-left: 0.75rem;
-  padding-right: 0.75rem;
-}
-
-/* offset row border bottom expanding offscreen through use of padding */
-.container-footer .border-bottom {
-  padding-left: 0.75rem;
-  padding-right: 0.75rem;
-}
-
-/* offset container fluid expanding offscreen through use of padding */
-.container-fluid {
-  padding-left: 0.75rem;
-  padding-right: 0.75rem;
-}
-
-/* Create container css */
+/* ================= Create/Update page container =========================== */
 .container-create {
   font-family: 'Raleway';
   font-weight: bold;
@@ -473,7 +347,7 @@ footer {
   padding-bottom: 3rem;
 }
 
-/* Alert css to fit theme of FoodieVent website */
+/* ================= Alerts (on-brand border + shadow) ====================== */
 .alert {
   border: none;
   border-left: 6px solid #198754;
@@ -482,18 +356,11 @@ footer {
   font-weight: 600;
 }
 
-.register-text {
-  font-family: 'Raleway';
-  font-weight: bold;
-  color: #556B2F;
-}
+/* ================= Small text helpers ==================================== */
+.register-text { font-family: 'Raleway'; font-weight: bold; color: #556B2F; }
+.class-group { background-color: #caf0c5 }
 
-.class-group {
-  background-color: #caf0c5
-}
-
-
-/* Card base + motion */
+/* ================= Cards: motion/hover effects ============================ */
 .card.hover-lift {
   transition: transform .28s cubic-bezier(.22,.61,.36,1), box-shadow .28s ease, outline-color .28s ease;
   will-change: transform, box-shadow;
@@ -501,22 +368,27 @@ footer {
   overflow: hidden;
   position: relative;
 }
-
-/* Lift + soft ring */
+/* Elevated hover effect + soft outline */
 .card.hover-lift:hover {
   transform: translateY(-7px);
-  box-shadow: 0 16px 30px rgba(0,0,0,.16), 0 8px 16px rgba(0,0,0,.08);
+  box-shadow: 0 14px 26px rgba(0,0,0,.14), 0 6px 12px rgba(0,0,0,.08);
   outline: 2px solid rgba(25,135,84,.28);
   outline-offset: 0;
 }
-
-/* Keyboard focus ring */
+/* When View Details is hovered, softly highlight the footer (no extra lift) */
+@supports selector(:has(*)) {
+  .card.hover-lift:has(.btn-success.view-details:hover) .card-footer,
+  .card.hover-lift:has(.btn-success.view-details:focus-visible) .card-footer {
+    background-color: #eaf6ef;
+    transition: background-color .2s ease;
+  }
+}
+/* Keyboard focus ring for accessibility */
 .card.hover-lift:focus-visible {
   outline: 2px solid rgba(25,135,84,.45);
   outline-offset: 0;
 }
-
-/* Image zoom + gentle pop */
+/* Card image zoom on hover */
 .card.hover-lift .card-img-top {
   transition: transform .45s cubic-bezier(.22,.61,.36,1), filter .25s ease;
   will-change: transform, filter;
@@ -526,8 +398,7 @@ footer {
   transform: scale(1.075) translateY(-1px);
   filter: contrast(1.04) saturate(1.07);
 }
-
-/* Top gradient depth (slightly lighter) */
+/* Top gradient depth on hover */
 .card.hover-lift::after {
   content: "";
   position: absolute;
@@ -539,8 +410,7 @@ footer {
 .card.hover-lift:hover::after {
   background: linear-gradient(to bottom, rgba(0,0,0,.08), rgba(0,0,0,0) 40%);
 }
-
-/* Shiny sweep (narrower band + softer core) */
+/* Shiny diagonal sweep effect */
 .card.hover-lift::before {
   content: "";
   position: absolute;
@@ -548,41 +418,23 @@ footer {
   background:
     linear-gradient(120deg,
       transparent 46%,
-      rgba(255,255,255,.26) 50%,   /* softer core */
+      rgba(255,255,255,.26) 50%,
       transparent 54%
     ),
     radial-gradient(40% 80% at 50% 50%, rgba(255,255,255,.18), transparent 60%);
   transform: translateX(-130%) skewX(-8deg);
   mix-blend-mode: screen;
   filter: drop-shadow(0 0 10px rgba(255,255,255,.25));
-  opacity: .70;                              /* base sheen strength */
+  opacity: .70;
   transition: transform .7s ease, opacity .25s ease;
   pointer-events: none;
 }
 .card.hover-lift:hover::before {
   transform: translateX(130%) skewX(-8deg);
-  opacity: .88;                              /* toned-down hover */
+  opacity: .88;
 }
 
-/* Ripple container */
-.ripple { position: relative; overflow: hidden; }
-
-/* Ripple pulse */
-.ripple:after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(circle at var(--x,50%) var(--y,50%), rgba(25,135,84,.15), transparent 42%);
-  opacity: 0;
-  transition: opacity .6s ease;
-  pointer-events: none;
-}
-.ripple:active:after {
-  opacity: 1;
-  transition: opacity .15s ease;
-}
-
-/* Reduced motion */
+/* ================= Reduced motion preference support ===================== */
 @media (prefers-reduced-motion: reduce) {
   .card.hover-lift,
   .card.hover-lift .card-img-top {
@@ -590,6 +442,7 @@ footer {
   }
 }
 
+/* ================= Flash message overlay in hero sections ================= */
 .flash-hero {
   position: absolute;
   top: .75rem;
@@ -597,12 +450,29 @@ footer {
   right: clamp(.5rem, 2vw, 1rem);
   z-index: 20;
 }
-.flash-hero .alert {
-  border-radius: .25rem;
-  margin: 0;
-}
+.flash-hero .alert { border-radius: .25rem; margin: 0; }
+.flash-hero, .flash-hero * { text-shadow: none !important; }
 
-.flash-hero,
-.flash-hero * {
-  text-shadow: none !important;
+/* ===== View Details: continuous stronger jiggle while hovered ============== */
+.btn-success.view-details:hover,
+.btn-success.view-details:focus-visible {
+  /* stronger lift/glow while hovered */
+  box-shadow: 0 18px 30px rgba(0,0,0,.22), 0 10px 20px rgba(0,0,0,.12);
+  filter: contrast(1.05) saturate(1.07);
+  animation: viewDetailsJiggleStrong 320ms ease-in-out infinite;
+  will-change: transform;
+}
+@keyframes viewDetailsJiggleStrong {
+  0%   { transform: translateY(-5px) translateX(0)    scale(1.025) rotate(0deg); }
+  25%  { transform: translateY(-5px) translateX(2px)  scale(1.030) rotate(1.6deg); }
+  50%  { transform: translateY(-5px) translateX(-2px) scale(1.030) rotate(-1.6deg); }
+  75%  { transform: translateY(-5px) translateX(1px)  scale(1.028) rotate(1.1deg); }
+  100% { transform: translateY(-5px) translateX(0)    scale(1.025) rotate(0deg); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .btn-success.view-details:hover,
+  .btn-success.view-details:focus-visible {
+    animation: none !important;
+    transform: translateY(-4px) scale(1.02);
+  }
 }
