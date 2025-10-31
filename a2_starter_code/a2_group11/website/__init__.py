@@ -15,7 +15,7 @@ def create_app():
     # This is the name of the module/package that is calling this app
     app = Flask(__name__)
     # As the website is in a production environment, debug is set to False
-    app.debug = True
+    app.debug = False
     app.secret_key = 'somesecretkey'
     # Set the app configuration data
     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///sitedata.sqlite'
