@@ -1,22 +1,43 @@
 {% extends "base.html" %}
-
+<!--This page inherits its layout from the main base.html page-->
+<!--Ensures this page will have the same navbar and footer as the other html pages. -->
 {% block content %}
+<!--Begin and replace main content section in base.html when page is rendered-->
 
+<!--Error 500-->
 <div class="container-error d-flex flex-column justify-content-center align-items-center text-center"
     style="min-height: 80vh";>
-    
+    <!--Bootstrap class
+ - d-flex allows flexbox
+ - flex-column allows vertical stacking of content
+ - justify-content-center centers the content vertically
+ - align-items-center centers content horiontally 
+ - text-center centers the pages text
+ - "min height:80vh sets the minimum height to 80% of the viewport"-->  
+
+ <!--500_Error GIF image-->
     <img
         src="{{ url_for('static', filename='img/500_Error.gif')}}"
         alt="Lego 500 Error"
         class="img-fluid mb-4"
         style="max-width: 380px;">
+    <!--
+    - url_for() provides location for the file path within the static and img folder
+    - 'img fluid' allows the img to be responsive
+    - 'mb-4' adding spacing and bottom margin
+    - 'max width' adds limits the size of the GIF image.
+    --->
 
+    <!--Error handling description-->
     <h1 class="fw-bold">Error 500!</h1>
     <p>Something went wrong! More info:</p>
     <p>{{error}}</p>
+    <!--{{error}} displays specific error details from error handler-->
+
 
     <a href="{{ url_for('main.index') }}" class="btn btn-success mt-3 px-4 py-2">Return Home</a>
-        
+     <!--Button to link back to home page-->   
 </div>
 
 {% endblock %}
+<!-- End of content block-->
