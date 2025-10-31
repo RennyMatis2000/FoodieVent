@@ -76,7 +76,7 @@ def create_app():
     # Inbuilt function for handling 500 errors
     # Error 500 will not handle if a user is logged in as the database is deleted
     # This is because load_user will be called to an empty database, while there is a cookie for a logged in user
-    # Cache must be cleared, and then a 500 error will be able to be handled
+    # Cookies must be cleared, and then a 500 error will be able to be handled
     @app.errorhandler(500)
     def server_error(e):
     # Rollback the database for database safety in the event of a 500 error
