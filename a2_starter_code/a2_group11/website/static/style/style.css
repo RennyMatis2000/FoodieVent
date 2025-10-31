@@ -92,7 +92,7 @@ body {
   position: relative;
   display: flex;
   align-items: center;
-  min-height: 20vh;
+  height: 20vh;
 }
 .creationjumbotronimage::before {
   content: "";
@@ -140,7 +140,6 @@ body {
   position: relative;
   display: flex;
   align-items: center;
-  min-height: 41.8vh;
   background: url("../img/BookingJumbotronImage.jpg") center center no-repeat;
   background-size: cover;
   color: #fff;
@@ -150,11 +149,11 @@ body {
      1px -1px 0 #000,
     -1px  1px 0 #000,
      1px  1px 0 #000;
+  height: 20vh;
 }
 .bookingjumbotronimage > .jumbotronback {
   position: relative;
   z-index: 1;
-  min-height: 20vh;
 }
 
 /* ============== Generic image helpers (carousel + caps) ==================== */
