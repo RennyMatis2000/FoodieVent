@@ -1,4 +1,4 @@
-# Fully-Developed-Web-Application-Solution-Event-Management-System
+# FoodieVent-The-Fully-Developed-Web-Application-Solution-Event-Management-System
 
 ## Introduction
 
